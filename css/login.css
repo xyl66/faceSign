@@ -1,0 +1,196 @@
+*{
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+/* 去掉链接下划线 */
+a:link { 
+  text-decoration: none; 
+  } 
+  a:visited { 
+  text-decoration: none; 
+  } 
+/**************************************************************************** 顶部导航 ****************************************************************************/
+header{
+  text-align: center;
+  padding: .493333rem .4rem;
+  height: .64rem;
+}
+header>a{
+  float: left;
+  margin: .066667rem;
+}
+header>a>img{
+  width: .28rem;
+  height: .48rem;
+}
+header>h1{
+  font-size: .453333rem;
+  color: #666666;
+}
+/**************************************************************************** 登录页邮箱主体区域 ****************************************************************************/
+article.main{
+  display: flex;
+  flex-direction: column;
+  height: 15.466667rem;
+}
+.logo{
+  display: flex;
+  justify-content: center;
+  margin-top: .466667rem;
+}
+.logo>img{
+  width: 2.4rem;
+  height: 2.4rem;
+}
+/* 输入框样式 */
+.ipt-content{
+  margin-top: 2.053333rem;
+}
+.ipt-group{
+  display: flex;
+  align-items: center;
+  padding: .48rem 0 .24rem 0;
+  margin: 0 .8rem;
+}
+.ipt-group.line-bottom{
+  border-bottom: solid .013333rem #9e9e9e;;
+}
+/* [data-dpr="2"] .ipt-group.line-bottom{
+  border-bottom: solid .5px #9e9e9e;;
+}
+[data-dpr="3"] .ipt-group.line-bottom{
+  border-bottom: solid .333333px #9e9e9e;;
+} */
+.ipt-group input{
+  font-size: .373333rem;
+  width: 5.466667rem;
+  border: none;
+}
+.ipt-group img{
+  width: .266667rem;
+  height: .4rem;
+  margin-right: .226667rem;
+}
+.ipt-group:nth-child(2) img{
+  width: .32rem;
+  height: .386667rem;
+}
+.ipt-group:nth-child(3) img{
+  width: .24rem;
+  height: .24rem;
+}
+/* 语音验证码样式 */
+.viste-call{
+  justify-content: flex-end;
+  font-size: .266667rem;
+}
+.viste-call span{
+  color: #7d7d7d;
+}
+.viste-call a{
+  color: #fa5c58;
+}
+/* 获取验证码样式 */
+.ipt-group button{
+  width: 2.933333rem;
+  height: .8rem;
+  background-color: #fa5c58;
+  border-radius: .4rem;
+  font-size: .4rem;
+  color: #fff;
+}
+/* 提交按钮样式 */
+.btn-content{
+  text-align: center;
+  margin-top: 1.573333rem;
+}
+/* 按钮样式 */
+.btn{
+  display: inline-block;
+  width: 8.4rem;
+  height: 1.2rem;
+  line-height: 1.2rem;
+  border-radius: .6rem;
+  font-size: .48rem;
+  color: #fff;
+}
+.btn-small{
+  width: 2.133333rem;
+  height: .8rem;
+  line-height: .8rem;
+  font-size: .453333rem;
+}
+.btn-default{
+  background-color: #6a6a6a;
+}
+.btn-primary{
+  background-color: #4abe3b;
+}
+.btn-danger{
+  background-color: #fa5c58;
+}
+/**************************************************************************** 底部样式 ****************************************************************************/
+footer{
+  bottom: .266667rem;
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  color: #7d7d7d;
+  background-color: #fff
+}
+
+/**************************************************************************** 列表样式 ****************************************************************************/
+.bg-f7{
+  background: #f7f7f7;
+}
+.list-content{
+  padding: .386667rem .4rem;
+}
+.list-content li>a{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.list-content li span{
+  font-size: 14px;
+  color: #7d7d7d;
+}
+[data-dpr="2"] .list-content li span{
+  font-size: 28px;
+}
+[data-dpr="3"] .list-content li span{
+  font-size: 42px;
+}
+.list-content li img{
+  width: .16rem;
+  height: .293333rem;
+}
+.list-content .list-item{
+  padding: .426667rem .386667rem;
+  background-color: #fff;
+  border-radius: .133333rem;
+  margin-bottom: .266667rem
+}
+
+
+/**************************************************************************** 公共样式 ****************************************************************************/
+.flex-box{
+  display: flex;
+}
+.flex-space-between{
+  justify-content: space-between
+}
+.flex-aligin-center{
+  align-items: center;
+}
+.vh-100{
+  height: 100vh;
+}
+.bg-fff{
+  background-color: #fff;
+}
+/* 上传按钮隐藏 */
+input[type='file']{
+  display: none;
+}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <script src="../js/flexible/flexible.js"></script>
+    <!-- less -->
+    <link rel="stylesheet/less" href="../css/style.less">
+    <script src="../js/less/less.min.js"></script>
+    <title>个人中心</title>
+    <!-- 引入样式 -->
+
+    <link rel="stylesheet" href="../css/login.css">
+    <style>
+        /* 顶部背景 */
+        .bg {
+            background: url('../img/bg.png');
+            height: 5.333333rem;
+        }
+
+        [data-dpr="2"] .bg {
+            background: url('../img/bg@2x.png');
+        }
+
+        [data-dpr="3"] .bg {
+            background: url('../img/bg@3x.png');
+        }
+
+        .bg>header>h1 {
+            color: #fff;
+        }
+
+        /* 中间卡片 */
+        section.info-content {
+            display: flex;
+            justify-content: center;
+        }
+
+        .card-box {
+            width: 7.52rem;
+            height: 7.96rem;
+            background-color: #ffffff;
+            border-radius: .133333rem;
+            margin-top: -0.613333rem;
+        }
+
+        /* 头像部分 */
+        .card-box>.header>img {
+            width: 2.426667rem;
+            height: 2.426667rem;
+            margin: -1.213333rem 0 0 2.546667rem;
+        }
+
+        /* 列表信息部分 */
+        .person-info-content {
+            padding: .933333rem;
+        }
+
+        .person-info-content li {
+            display: flex;
+            align-items: center;
+            padding-bottom: .426667rem;
+            margin-bottom: .653333rem;
+            border-bottom: 1px solid #9a9a9a;
+        }
+
+        .person-info-content li img {
+            width: .533333rem;
+            height: .533333rem;
+            margin-right: .133333rem;
+        }
+
+        [data-dpr="1"] .person-info-content li p {
+            font-size: 14px;
+            color: #333333;
+        }
+
+        [data-dpr="2"] .person-info-content li p {
+            font-size: 28px;
+            color: #333333;
+        }
+
+        [data-dpr="3"] .person-info-content li p {
+            font-size: 42px;
+            color: #333333;
+        }
+
+        .person-info-content li span.body {
+            margin-left: .36rem;
+        }
+    </style>
+</head>
+
+<body class="vh-100 bg-f7">
+    <section class="bg">
+        <header>
+            <!-- <a href=""><img src="../img/icon-back.png" alt=""></a> -->
+            <h1>个人中心</h1>
+        </header>
+    </section>
+    <article>
+        <section class="info-content">
+            <div class="card-box">
+                <section class="header">
+                    <img src="../img/頭像.png" alt="" srcset="">
+                </section>
+                <section class="person-info-content">
+                    <ul>
+                        <li>
+                            <img src="../img/phone@2x.png" alt="">
+                            <p>手机号:<span class="body">12345678900</span></p>
+                        </li>
+                        <li>
+                            <img src="../img/email@2x.png" alt="">
+                            <p>邮 箱:<span class="body">492113976@qq.com</span></p>
+                        </li>
+                        <li>
+                            <img src="../img/认证状态@2x.png" alt="">
+                            <p>认证状态:<span class="body">已认证</span></p>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </section>
+    </article>
+    <footer class="fixed">
+        <ul>
+            <li>
+                <a href="./signWait.html">
+                    <i class="sign-wait" alt=""></i>
+                    <span>待签合同</span>
+                </a>
+            </li>
+            <li>
+                <a href="./signFinish.html">
+                    <i class="sign-finish" alt=""></i>
+                    <span>已签合同</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="./personInfo.html">
+                    <i class="sign-person" alt=""></i>
+                    <span>个人中心</span>
+                </a>
+            </li>
+        </ul>
+    </footer>
+</body>
+
+</html>

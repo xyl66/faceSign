@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <script src="../js/flexible/flexible.js"></script>
+  <title>合同详情</title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="../css/login.css">
+  <style>
+    .ipt-group.email img {
+      width: .346667rem;
+      height: .306667rem;
+    }
+
+    .contract-content>.view-box {
+      width: 9.2rem;
+      height: 13.333333rem;
+      background-color: #fff;
+      margin: .4rem .4rem;
+    }
+
+    .sub-content {
+      text-align: center;
+      margin-top: .093333rem;
+    }
+
+    .img-contract {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 手写区域 */
+    #write {
+      display: none;
+      height: 100vh;
+      background-color: rgba(255, 255, 255, 0.9);
+      position: absolute;
+      width: 100vw;
+      top: 0;
+      left: 0;
+    }
+    .write-content{
+      margin: 1.84rem .4rem 0 .4rem;
+    }
+    .write-content img{
+          position: absolute;
+          width: 3.306667rem;
+          height: .773333rem;
+          margin: -0.386667rem .56rem;
+      }
+    #canvas{
+      width: 9.2rem;
+      height: 12.266667rem;
+      border: dotted 1px #fa5c58;
+    }
+    .btn-write-content{
+      display: flex;
+      justify-content: center;
+      margin-top: .933333rem;
+    }
+    .btn-write-content button {
+        margin-left: 30px;
+    }
+  </style>
+</head>
+
+<body class="vh-100 bg-f7">
+  <article>
+    <header class="bg-fff">
+      <a href="./signWait.html"><img src="../img/icon-back.png" alt=""></a>
+      <h1>合同详情</h1>
+    </header>
+    <article class="main">
+      <section class="contract-content">
+        <div class="view-box">
+          <img class="img-contract" src="../img/合同@2x.png" alt="">
+        </div>
+      </section>
+      <section class="sub-content">
+        <button class="btn btn-danger" onclick="showWrite()">确认签字</button>
+      </section>
+    </article>
+    <footer>
+    </footer>
+  </article>
+  <!-- 签名区域 -->
+  <article id="write">
+    <section class="write-content">
+      <img src="../img/signlogo@2x.png" alt="">
+        <div id="canvas">
+        </div>
+    </section>
+    <section>
+        <div class="btn-write-content">
+            <button id="clearCanvas" class="btn btn-default btn-small">清除</button>
+            <button id="saveCanvas" class="btn btn-primary btn-small">保存</button>
+            <button class="btn btn-danger btn-small" onclick="hideWrite()">取消</button>
+        </div>
+    </section>
+  </article>
+  <script>
+    // window.onload = function () {
+    //   new lineCanvas({
+    //     el: document.getElementById("canvas"), //绘制canvas的父级div
+    //     clearEl: document.getElementById("clearCanvas"), //清除按钮
+    //     saveEl: document.getElementById("saveCanvas"), //保存按钮
+    //     linewidth: 1, //线条粗细，选填
+    //     color: "black", //线条颜色，选填
+    //     background: "#ffffff" //线条背景，选填
+    //   });
+    // };
+    function showWrite(){
+      document.getElementById('write').style.display='block'
+      var elCanvas =document.querySelector('#canvas>canvas')
+      console.log(elCanvas)
+      if(elCanvas){
+        return
+      }
+      new lineCanvas({
+        el: document.getElementById("canvas"), //绘制canvas的父级div
+        clearEl: document.getElementById("clearCanvas"), //清除按钮
+        saveEl: document.getElementById("saveCanvas"), //保存按钮
+        linewidth: 1, //线条粗细，选填
+        color: "black", //线条颜色，选填
+        background: "#ffffff" //线条背景，选填
+      });
+    }
+    // 手写绘制
+    function lineCanvas(obj) {
+      this.linewidth = 1;
+      this.color = "#000";
+      this.background = "#fff";
+      for (var i in obj) {
+        this[i] = obj[i];
+      };
+      this.canvas = document.createElement("canvas");
+      this.el.prepend(this.canvas);
+      this.cxt = this.canvas.getContext("2d");
+      this.canvas.width = this.el.clientWidth;
+      this.canvas.height = this.el.clientHeight;
+      this.cxt.fillStyle = this.background;
+      this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.width);
+      this.cxt.strokeStyle = this.color;
+      this.cxt.lineWidth = this.linewidth;
+      this.cxt.lineCap = "round";
+      //开始绘制
+      this.canvas.addEventListener("touchstart", function (e) {
+        this.cxt.beginPath();
+        this.cxt.moveTo(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+      }.bind(this), false);
+      //绘制中
+      this.canvas.addEventListener("touchmove", function (e) {
+        this.cxt.lineTo(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+        this.cxt.stroke();
+      }.bind(this), false);
+      //结束绘制
+      this.canvas.addEventListener("touchend", function () {
+        this.cxt.closePath();
+      }.bind(this), false);
+      //清除画布
+      this.clearEl.addEventListener("click", function () {
+        this.cxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      }.bind(this), false);
+      //保存图片，直接转base64
+      this.saveEl.addEventListener("click", function () {
+        var imgBase64 = this.canvas.toDataURL();
+        console.log(imgBase64);
+        getWord(imgBase64.slice(imgBase64.indexOf('base64,') + 7))
+      }.bind(this), false);
+    };
+    // 上传图片识别文字
+    function getWord(img) {
+      var data = {
+        "image": img
+      }
+      window.location.href='./success.html'
+      return
+
+      console.log(data)
+      axios.post(
+        'https://aip.baidubce.com/rest/2.0/ocr/v1/handwriting?access_token=24.dd0eadfa426d925ed074f7b394cf8b1d.2592000.1544606864.282335-14774800',
+        Qs.stringify(data)).then(res => {
+        console.log(res)
+        if (res.data.error_code) {
+          document.getElementById('error').style.display = 'inline'
+          document.getElementById('success').style.display = 'none'
+          document.getElementById('error').innerHTML = '错误码:' + res.data.error_code + ';  错误提示:' + res.data.error_msg
+        } else {
+          checkTwo(res.data.result.face_list[0].face_token)
+        }
+      })
+    }
+    function hideWrite(){
+      document.getElementById('write').style.display='none'
+    }
+  </script>
+</body>
+
+</html>
