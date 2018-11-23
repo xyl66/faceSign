@@ -103,16 +103,9 @@
     </section>
   </article>
   <script>
-    // window.onload = function () {
-    //   new lineCanvas({
-    //     el: document.getElementById("canvas"), //绘制canvas的父级div
-    //     clearEl: document.getElementById("clearCanvas"), //清除按钮
-    //     saveEl: document.getElementById("saveCanvas"), //保存按钮
-    //     linewidth: 1, //线条粗细，选填
-    //     color: "black", //线条颜色，选填
-    //     background: "#ffffff" //线条背景，选填
-    //   });
-    // };
+    document.querySelector('body').addEventListener('touchmove', function(e) {
+        e.preventDefault();
+    })
     function showWrite(){
       document.getElementById('write').style.display='block'
       var elCanvas =document.querySelector('#canvas>canvas')
@@ -126,7 +119,9 @@
         saveEl: document.getElementById("saveCanvas"), //保存按钮
         linewidth: 1, //线条粗细，选填
         color: "black", //线条颜色，选填
-        background: "#ffffff" //线条背景，选填
+        background: "#ffffff", //线条背景，选填
+        paddingX: 0, // x轴偏移量
+        paddingY: 0, // y轴偏移量
       });
     }
     // 手写绘制
@@ -137,6 +132,8 @@
       for (var i in obj) {
         this[i] = obj[i];
       };
+      this.paddingX = this.el.getBoundingClientRect().left
+      this.paddingY = this.el.getBoundingClientRect().top
       this.canvas = document.createElement("canvas");
       this.el.prepend(this.canvas);
       this.cxt = this.canvas.getContext("2d");
@@ -150,11 +147,12 @@
       //开始绘制
       this.canvas.addEventListener("touchstart", function (e) {
         this.cxt.beginPath();
-        this.cxt.moveTo(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+        console.log(e.changedTouches)
+        this.cxt.moveTo(e.changedTouches[0].pageX-this.paddingX, e.changedTouches[0].pageY-this.paddingY);
       }.bind(this), false);
       //绘制中
       this.canvas.addEventListener("touchmove", function (e) {
-        this.cxt.lineTo(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+        this.cxt.lineTo(e.changedTouches[0].pageX-this.paddingX, e.changedTouches[0].pageY-this.paddingY);
         this.cxt.stroke();
       }.bind(this), false);
       //结束绘制
