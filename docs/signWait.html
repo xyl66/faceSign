@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <script src="../js/flexible/flexible.js"></script>
+  <!-- less -->
+  <link rel="stylesheet/less" href="../css/style.less">
+  <script src="../js/less/less.min.js"></script>
+  <title>填写邮箱</title>
+  <!-- 引入样式 -->
+
+  <link rel="stylesheet" href="../css/login.css">
+</head>
+
+<body>
+  <header>
+      <!-- <a href=""><img src="../img/icon-back.png" alt=""></a> -->
+      <h1>待签合同</h1>
+  </header>
+  <article class="main bg-f7">
+    <section class="list-content">
+        <input id="img1" type="file" accept="image/*" capture="camera">
+      <ul>
+        <li class="list-item flex-box flex-space-between flex-aligin-center" onclick="upLoad('img1')">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+        <li class="list-item flex-box flex-space-between flex-aligin-center">
+            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        </li>
+      </ul>
+    </section>
+  </article>
+  <footer class="fixed">
+    <ul>
+        <li class="active">
+            <a href="./signWait.html">
+              <i class="sign-wait" alt=""></i>
+              <span>待签合同</span>
+            </a>
+          </li>
+          <li>
+            <a href="./signFinish.html">
+              <i class="sign-finish" alt=""></i>
+              <span>已签合同</span>
+            </a>
+          </li>
+          <li>
+            <a href="./personInfo.html">
+              <i class="sign-person" alt=""></i>
+              <span>个人中心</span>
+            </a>
+          </li>
+    </ul>
+  </footer>
+  <script src="../js/common.js"></script>
+  <script>
+    window.onload=function(){
+      bindImgChange('img1',function(e){
+        alert('验证成功')
+        window.location.href='./contract.html'
+      })
+    }
+  </script>
+</body>
+
+</html>
