@@ -6,10 +6,10 @@
   <meta content="yes" name="apple-mobile-web-app-capable">
   <meta content="yes" name="apple-touch-fullscreen">
   <meta content="telephone=no,email=no" name="format-detection">
-  <script src="../js/flexible/flexible.js"></script>
+  <script src="./js/flexible/flexible.js"></script>
   <title>身份验证</title>
   <!-- 引入样式 -->
-  <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="./css/login.css">
   <style>
     /* 顶部样式 */
     .top-content{
@@ -47,7 +47,7 @@
 
 <body>
   <header>
-    <a href=""><img src="../img/icon-back.png" alt=""></a>
+    <a href=""><img src="./img/icon-back.png" alt=""></a>
     <h1>身份验证</h1>
   </header>
   <article class="main">
@@ -57,12 +57,12 @@
     <section class="pic-content">
       <div class="pic-group">
         <p>身份证正面</p>
-        <img id="pic1" src="../img/idcard-front.png" alt="" onclick="upLoad('img1')">
+        <img id="pic1" src="./img/idcard-front.png" alt="" onclick="upLoad('img1')">
         <input id="img1" type="file" accept="image/*" capture="camera">
       </div>
       <div class="pic-group">
           <p>身份证背面</p>
-          <img id="pic2" src="../img/idcard-back.png" alt="" onclick="upLoad('img2')">
+          <img id="pic2" src="./img/idcard-back.png" alt="" onclick="upLoad('img2')">
           <input id="img2" type="file" accept="image/*" capture="camera">
         </div>
     </section>
@@ -73,7 +73,7 @@
   <footer>
   </footer>
 </body>
-<script src="../js/common.js"></script>
+<script src="./js/common.js"></script>
 <script>
   window.onload=function(){
     bindImgChange('img1',function(e){
