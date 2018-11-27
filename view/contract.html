@@ -11,26 +11,50 @@
   <!-- 引入样式 -->
   <link rel="stylesheet" href="../css/login.css">
   <style>
-    .ipt-group.email img {
-      width: .346667rem;
-      height: .306667rem;
+    body {
+      height: 100%;
+    }
+
+    /* 顶部区域 */
+    header.fixed {
+      width: 100vw;
+    }
+
+    article.main {
+      height: 100%;
+    }
+
+    .contract-content {
+      padding-top: 1.6rem;
+      padding-bottom: 1.866667rem;
     }
 
     .contract-content>.view-box {
       width: 9.2rem;
-      height: 13.333333rem;
-      background-color: #fff;
+      height: 100%;
+      /* background-color: #fff; */
       margin: .4rem .4rem;
     }
 
     .sub-content {
       text-align: center;
-      margin-top: .093333rem;
     }
 
     .img-contract {
       width: 100%;
       height: 100%;
+      margin-bottom: .48rem;
+    }
+
+    /* 底部确认区 */
+    footer {
+      background-color: #f7f7f7;
+    }
+
+    footer.fixed {
+      position: fixed;
+      bottom: 0;
+      padding-bottom: .666667rem;
     }
 
     /* 手写区域 */
@@ -38,164 +62,224 @@
       display: none;
       height: 100vh;
       background-color: rgba(255, 255, 255, 0.9);
-      position: absolute;
+      position: fixed;
       width: 100vw;
       top: 0;
       left: 0;
     }
-    .write-content{
+
+    .write-content {
       margin: 1.84rem .4rem 0 .4rem;
     }
-    .write-content img{
-          position: absolute;
-          width: 3.306667rem;
-          height: .773333rem;
-          margin: -0.386667rem .56rem;
-      }
-    #canvas{
+
+    .write-content img {
+      position: absolute;
+      width: 3.306667rem;
+      height: .773333rem;
+      margin: -0.386667rem .56rem;
+    }
+
+    #canvas {
       width: 9.2rem;
       height: 12.266667rem;
       border: dotted 1px #fa5c58;
     }
-    .btn-write-content{
+
+    .btn-write-content {
       display: flex;
       justify-content: center;
       margin-top: .933333rem;
     }
+
     .btn-write-content button {
-        margin-left: 30px;
+      margin-left: 30px;
     }
   </style>
 </head>
 
-<body class="vh-100 bg-f7">
+<body class="bg-f7">
   <article>
-    <header class="bg-fff">
+    <header class="fixed bg-fff">
       <a href="./signWait.html"><img src="../img/icon-back.png" alt=""></a>
       <h1>合同详情</h1>
     </header>
-    <article class="main">
+    <article class="main" id="main">
       <section class="contract-content">
         <div class="view-box">
-          <img class="img-contract" src="../img/合同@2x.png" alt="">
+          <div v-for="item in contractList" class="zoom">
+            <img class="img-contract" :src="item.src" alt="">
+          </div>
         </div>
       </section>
-      <section class="sub-content">
-        <button class="btn btn-danger" onclick="showWrite()">确认签字</button>
-      </section>
     </article>
-    <footer>
-    </footer>
   </article>
+  <footer class="fixed">
+    <section class="sub-content">
+      <button class="btn btn-danger" onclick="showWrite()">确认签字</button>
+    </section>
+  </footer>
   <!-- 签名区域 -->
   <article id="write">
     <section class="write-content">
       <img src="../img/signlogo@2x.png" alt="">
-        <div id="canvas">
-        </div>
+      <div id="canvas">
+      </div>
     </section>
     <section>
-        <div class="btn-write-content">
-            <button id="clearCanvas" class="btn btn-default btn-small">清除</button>
-            <button id="saveCanvas" class="btn btn-primary btn-small">保存</button>
-            <button class="btn btn-danger btn-small" onclick="hideWrite()">取消</button>
-        </div>
+      <div class="btn-write-content">
+        <button id="clearCanvas" class="btn btn-default btn-small">清除</button>
+        <button id="saveCanvas" class="btn btn-primary btn-small">保存</button>
+        <button class="btn btn-danger btn-small" onclick="hideWrite()">取消</button>
+      </div>
     </section>
   </article>
-  <script>
-    document.querySelector('body').addEventListener('touchmove', function(e) {
-        e.preventDefault();
-    })
-    function showWrite(){
-      document.getElementById('write').style.display='block'
-      var elCanvas =document.querySelector('#canvas>canvas')
-      console.log(elCanvas)
-      if(elCanvas){
-        return
-      }
-      new lineCanvas({
-        el: document.getElementById("canvas"), //绘制canvas的父级div
-        clearEl: document.getElementById("clearCanvas"), //清除按钮
-        saveEl: document.getElementById("saveCanvas"), //保存按钮
-        linewidth: 1, //线条粗细，选填
-        color: "black", //线条颜色，选填
-        background: "#ffffff", //线条背景，选填
-        paddingX: 0, // x轴偏移量
-        paddingY: 0, // y轴偏移量
-      });
-    }
-    // 手写绘制
-    function lineCanvas(obj) {
-      this.linewidth = 1;
-      this.color = "#000";
-      this.background = "#fff";
-      for (var i in obj) {
-        this[i] = obj[i];
-      };
-      this.paddingX = this.el.getBoundingClientRect().left
-      this.paddingY = this.el.getBoundingClientRect().top
-      this.canvas = document.createElement("canvas");
-      this.el.prepend(this.canvas);
-      this.cxt = this.canvas.getContext("2d");
-      this.canvas.width = this.el.clientWidth;
-      this.canvas.height = this.el.clientHeight;
-      this.cxt.fillStyle = this.background;
-      this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.width);
-      this.cxt.strokeStyle = this.color;
-      this.cxt.lineWidth = this.linewidth;
-      this.cxt.lineCap = "round";
-      //开始绘制
-      this.canvas.addEventListener("touchstart", function (e) {
-        this.cxt.beginPath();
-        console.log(e.changedTouches)
-        this.cxt.moveTo(e.changedTouches[0].pageX-this.paddingX, e.changedTouches[0].pageY-this.paddingY);
-      }.bind(this), false);
-      //绘制中
-      this.canvas.addEventListener("touchmove", function (e) {
-        this.cxt.lineTo(e.changedTouches[0].pageX-this.paddingX, e.changedTouches[0].pageY-this.paddingY);
-        this.cxt.stroke();
-      }.bind(this), false);
-      //结束绘制
-      this.canvas.addEventListener("touchend", function () {
-        this.cxt.closePath();
-      }.bind(this), false);
-      //清除画布
-      this.clearEl.addEventListener("click", function () {
-        this.cxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      }.bind(this), false);
-      //保存图片，直接转base64
-      this.saveEl.addEventListener("click", function () {
-        var imgBase64 = this.canvas.toDataURL();
-        console.log(imgBase64);
-        getWord(imgBase64.slice(imgBase64.indexOf('base64,') + 7))
-      }.bind(this), false);
-    };
-    // 上传图片识别文字
-    function getWord(img) {
-      var data = {
-        "image": img
-      }
-      window.location.href='./success.html'
-      return
 
-      console.log(data)
-      axios.post(
-        'https://aip.baidubce.com/rest/2.0/ocr/v1/handwriting?access_token=24.dd0eadfa426d925ed074f7b394cf8b1d.2592000.1544606864.282335-14774800',
-        Qs.stringify(data)).then(res => {
-        console.log(res)
-        if (res.data.error_code) {
-          document.getElementById('error').style.display = 'inline'
-          document.getElementById('success').style.display = 'none'
-          document.getElementById('error').innerHTML = '错误码:' + res.data.error_code + ';  错误提示:' + res.data.error_msg
-        } else {
-          checkTwo(res.data.result.face_list[0].face_token)
+</body>
+<!-- <script src="../js/imgZoom/jquery-1.11.0.min.js"></script>
+<script src="../js/imgZoom/jquery.zoom.js"></script> -->
+<script src="../js/axios/dist/axios.min.js"></script>
+<script src="../js/vue/vue-2.5.17.js"></script>
+<script src="../js/config/config.js"></script>
+<script>
+  // window.onload=function(){
+  //   $('#img1').zoom({ on:'toggle' });
+  //   $('#img2').zoom({ on:'toggle' });
+  // }
+  // 初始化vue
+  var vm = new Vue({
+    el: '#main',
+    data: {
+      contractList: []
+    },
+    async mounted() {
+      var askId = '7AF3592B-227E-4F71-AE30-A83400F1D0E7',
+          arr = new Array(5)
+          arr = await Promise.all([this.getImg(askId,'1'),this.getImg(askId,'2'),this.getImg(askId,'3'),this.getImg(askId,'4'),this.getImg(askId,'5')])
+          console.log(arr)
+          this.contractList = arr
+    },
+    methods: {
+      getImg: getImg
+    }
+  })
+
+  function getImg(askId, pageIndex) {
+    return new Promise(function(resolve,reject){
+      var _this = this,
+        url = window.webConfig.apiUrl + '/api/SignOper/getdocimg?id=' + askId + '&index=' + pageIndex
+      axios.get(url).then(function (res) {
+        var jsonRet = JSON.parse(res.data)
+        console.log(jsonRet)
+        if (jsonRet.ReturnCode == 'SUCCESS') {
+          var jsDoc = JSON.parse(jsonRet.JsonDesc);
+          console.log(jsDoc)
+          resolve({
+            src: 'data:image/jpg;base64,' + jsDoc.CurImgBase
+          }) 
         }
       })
+    })
+  }
+  document.querySelector('body').addEventListener('touchmove', function (e) {
+    e.preventDefault();
+  })
+
+  function showWrite() {
+    document.getElementById('write').style.display = 'block'
+    var elCanvas = document.querySelector('#canvas>canvas')
+    console.log(elCanvas)
+    if (elCanvas) {
+      return
     }
-    function hideWrite(){
-      document.getElementById('write').style.display='none'
+    document.querySelector('#write').addEventListener('touchmove', function (e) {
+      e.preventDefault();
+    })
+    new lineCanvas({
+      el: document.getElementById("canvas"), //绘制canvas的父级div
+      clearEl: document.getElementById("clearCanvas"), //清除按钮
+      saveEl: document.getElementById("saveCanvas"), //保存按钮
+      linewidth: 1, //线条粗细，选填
+      color: "black", //线条颜色，选填
+      background: "#ffffff", //线条背景，选填
+      paddingX: 0, // x轴偏移量
+      paddingY: 0, // y轴偏移量
+    });
+  }
+  // 手写绘制
+  function lineCanvas(obj) {
+    this.linewidth = 1;
+    this.color = "#000";
+    this.background = "#fff";
+    for (var i in obj) {
+      this[i] = obj[i];
+    };
+    this.paddingX = this.el.getBoundingClientRect().left
+    this.paddingY = this.el.getBoundingClientRect().top
+    this.canvas = document.createElement("canvas");
+    this.el.prepend(this.canvas);
+    this.cxt = this.canvas.getContext("2d");
+    this.canvas.width = this.el.clientWidth;
+    this.canvas.height = this.el.clientHeight;
+    this.cxt.fillStyle = this.background;
+    this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.width);
+    this.cxt.strokeStyle = this.color;
+    this.cxt.lineWidth = this.linewidth;
+    this.cxt.lineCap = "round";
+    //开始绘制
+    this.canvas.addEventListener("touchstart", function (e) {
+      this.cxt.beginPath();
+      console.log(e.changedTouches)
+      this.cxt.moveTo(e.changedTouches[0].clientX - this.paddingX, e.changedTouches[0].clientY - this.paddingY);
+    }.bind(this), false);
+    //绘制中
+    this.canvas.addEventListener("touchmove", function (e) {
+      this.cxt.lineTo(e.changedTouches[0].clientX - this.paddingX, e.changedTouches[0].clientY - this.paddingY);
+      this.cxt.stroke();
+    }.bind(this), false);
+    //结束绘制
+    this.canvas.addEventListener("touchend", function () {
+      this.cxt.closePath();
+    }.bind(this), false);
+    //清除画布
+    this.clearEl.addEventListener("click", function () {
+      this.cxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }.bind(this), false);
+    //保存图片，直接转base64
+    this.saveEl.addEventListener("click", function () {
+      var imgBase64 = this.canvas.toDataURL();
+      console.log(imgBase64);
+      getWord(imgBase64.slice(imgBase64.indexOf('base64,') + 7))
+    }.bind(this), false);
+  };
+  // 上传图片识别文字
+  function getWord(img) {
+    var data = {
+      "image": img
     }
-  </script>
-</body>
+    window.location.href = './success.html'
+    return
+
+    console.log(data)
+    axios.post(
+      'https://aip.baidubce.com/rest/2.0/ocr/v1/handwriting?access_token=24.dd0eadfa426d925ed074f7b394cf8b1d.2592000.1544606864.282335-14774800',
+      Qs.stringify(data)).then(res => {
+      console.log(res)
+      if (res.data.error_code) {
+        document.getElementById('error').style.display = 'inline'
+        document.getElementById('success').style.display = 'none'
+        document.getElementById('error').innerHTML = '错误码:' + res.data.error_code + ';  错误提示:' + res.data.error_msg
+      } else {
+        checkTwo(res.data.result.face_list[0].face_token)
+      }
+    })
+  }
+
+  function hideWrite() {
+    document.getElementById('write').style.display = 'none'
+    document.querySelector('#write').addEventListener('touchmove', function (e) {
+
+    })
+  }
+</script>
 
 </html>

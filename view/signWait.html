@@ -21,45 +21,12 @@
       <!-- <a href=""><img src="../img/icon-back.png" alt=""></a> -->
       <h1>待签合同</h1>
   </header>
-  <article class="main bg-f7">
+  <article class="main bg-f7" id="main">
     <section class="list-content">
         <input id="img1" type="file" accept="image/*" capture="camera">
       <ul>
-        <li class="list-item flex-box flex-space-between flex-aligin-center" onclick="upLoad('img1')">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/返回拷贝@3x.png" alt="">
+        <li v-for="item in list" class="list-item flex-box flex-space-between flex-aligin-center" onclick="upLoad('img1')">
+            <span>{{item.DocName}}</span><img src="../img/icon-right@3x.png" alt="">
         </li>
       </ul>
     </section>
@@ -86,13 +53,35 @@
           </li>
     </ul>
   </footer>
+  <!-- 引入js -->
   <script src="../js/common.js"></script>
+  <script src="../js/axios/dist/axios.min.js"></script>
+  <script src="../js/vue/vue-2.5.17.js"></script>
   <script>
     window.onload=function(){
       bindImgChange('img1',function(e){
-        alert('验证成功')
         window.location.href='./contract.html'
       })
+    }
+    var vm = new Vue({
+      el: '#main',
+      data: {
+        list:[{
+            "sid":"eaa74a59-7f35-45b9-aa90-a8a100fa8d22",
+            "cid":"67fe8939-118b-494a-b39a-a8a100fa78cb",
+            "DocName":"客户询证函4971110D0118060014",
+            "PartA":"huang",
+            "PartB":"huang",
+            "UpdateDT":"2018-03-12T15:12:13.733",
+            "Status":"待签"
+        }]
+      },
+      methods:{
+        handleClick:handleClick
+      }
+    })
+    function handleClick(val){
+
     }
   </script>
 </body>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <script src="../js/flexible/flexible.js"></script>
+  <title>身份验证</title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="../css/login.css">
+  <style>
+    /* 顶部样式 */
+    .top-content{
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .top-content>span{
+      font-size: .346667rem;
+      color: #989898;
+    }
+    /* 识别样式 */
+    .pic-group{
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+    img#face{
+      width: 5.386667rem;
+      height: 5.386667rem;
+    }
+    /* 文本提示样式 */
+    .text-content {
+        margin: 0px .853333rem;
+        border-top: solid 1px #9a9a9a;
+        margin-top: .986667rem;
+        padding: .653333rem 0;
+    }
+    .text-content p{
+      font-size: .426667rem;
+      color: #666;
+    }
+    .text-content ul {
+        font-size: .373333rem;
+        color: #989898;
+        margin-top: .373333rem;
+    }
+    .text-content li {
+        margin-bottom: .426667rem;
+    }
+    /* 按钮位置调整 */
+    .btn-content{
+      margin-top: .813333rem;
+    }
+    /* 隐藏上传文件按钮 */
+    input[type='file']{
+      display: none;
+    }
+    /* 弹出框 */
+    .dialog{
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      background: rgba(0,0,0,.8);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .dialog.show{
+      display: block;
+    }
+    .dialog section {
+        justify-content: center;
+        padding: 3.12rem 0;
+    }
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 6.666667rem;
+      height: 7.733333rem;
+      background-color: #fff;
+	    border-radius: .133333rem;
+    }
+    .card p{
+      font-size: .426667rem;
+      color: #666;
+      margin: .44rem 0 .8rem 0;
+    }
+    .card>img{
+      width: 4.16rem;
+      height: 2.573333rem;
+    }
+    .card button{
+      width: 4.666667rem;
+      height: .933333rem;
+      line-height: .933333rem;
+    }
+    /* 关闭图标 */
+    .card>.close{
+      position: absolute;
+      top: .346667rem;
+      right: .346667rem;
+    }
+    .close img{
+      width: .266667rem;
+      height: .266667rem;
+    }
+    button.success{
+      background-color: #4abe3b;
+    }
+    button.error{
+      background-color: #fa5c58;
+    }
+  </style>
+</head>
+
+<body class="bg-f7">
+  <header>
+    <a href=""><img src="../img/icon-back.png" alt=""></a>
+    <h1>人脸识别</h1>
+  </header>
+  <article class="main bg-f7">
+    <section class="top-content">
+      <span>人脸识别扫描</span>
+    </section>
+    <section class="pic-content">
+      <div class="pic-group">
+        <img id="face" src="../img/logo-face@2x.png" alt="">
+        <input id="img1" type="file" accept="image/*" capture="camera">
+      </div>
+    </section>
+    <section class="text-content">
+      <p>温馨提示：</p>
+      <ul>
+        <li>
+          1.请将脸放在指定范围内
+        </li>
+        <li>
+          2.请保持正对手机，光线明亮
+        </li>
+        <li>
+          3.请保持良好的网络环境
+        </li>
+      </ul>
+    </section>
+    <section class="btn-content">
+        <button class="btn btn-danger">开始检测</button>
+    </section>
+  </article>
+  <article class="dialog ">
+    <section class="success flex-box">
+      <div class="card">
+        <img src="../img/success.png" alt="">
+        <p>认证成功</p>
+        <button class="btn success">确定</button>
+      </div>
+    </section>
+  </article>
+  <article class="dialog show">
+    <section class="error flex-box">
+      <div class="card">
+        <div class="close" onclick="closeHandle()">
+          <img src="../img/close.png" alt="">
+        </div>
+        <img src="../img/error.png" alt="">
+        <p>认证失败</p>
+        <button class="btn error">重试</button>
+      </div>
+    </section>
+  </article>
+  <footer>
+  </footer>
+</body>
+<script src="../js/common.js"></script>
+<script>
+  window.onload=function(){
+    bindImgChange('img1',function(e){
+      var imgs = e.slice(e.indexOf('base64,')+7)
+      // 下面逻辑处理
+      upCard(imgs,'front')
+    })
+  }
+// 关闭弹窗
+function closeHandle(){
+  document.querySelector('.show').style.display='none'
+}
+// 图片上传事件
+function upCard(img,type) {
+  var data = {
+        'detect_direction': 'true',
+        'image': img,
+        'id_card_side': type,
+        'detect_risk': 'false'
+    }
+    axios.post('https://aip.baidubce.com/rest/2.0/ocr/v1/idcard?access_token=24.dd0eadfa426d925ed074f7b394cf8b1d.2592000.1544606864.282335-14774800',Qs.stringify(data)).then(res=>{
+          console.log(res)
+          // 其他逻辑
+        })
+}
+</script>
+</html>

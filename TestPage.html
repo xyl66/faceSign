@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+	<meta charset="utf-8" />
+    <script crossorigin="anonymous" integrity="sha384-KcyRSlC9FQog/lJsT+QA8AUIFBgnwKM7bxm7/YaX+NTr4D00npYawrX0h+oXI3a2" src="https://lib.baomitu.com/jquery/1.12.4/jquery.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //------------查看合同------------
+            $('#test').click(function () {
+                $.ajax({
+                    type: "GET",
+                    cache: false,
+                    url: "http://csp.foxconn.com/HRApi/api/SignOper/getdocimg",
+                    data: { id: $("#askid").val(), index: $("#pageindex").val() },
+                    dataType: "json",
+                    success: function (data) {
+                        var jsonRet = jQuery.parseJSON(data);
+                        var jsDoc = jQuery.parseJSON(jsonRet["JsonDesc"]);
+                        $("img").attr("src", "data:image/jpg;base64," + jsDoc["CurImgBase"]);
+                        $("#resText").html(data);
+                    },
+                    error: function (ret) {
+                        console.log(ret);
+                    }
+                });
+            });
+            //------------合同列表
+            $('#btnList').click(function () {
+                $.ajax({
+                    type: "GET",
+                    cache: false,
+                    url: "http://csp.foxconn.com/HRApi/api/SignOper/getlist",
+                    data: { id: $("#tel").val(), status: $("#docstatus").val() },
+                    dataType: "json",
+                    success: function (data) {          
+                        $("#resText").html(data);
+                    },
+                    error: function (ret) {
+                        console.log(ret);
+                    }
+                });
+            });
+            //---------------下载附件
+            $('#download').click(function () {
+                window.location.href = "http://csp.foxconn.com/HRApi/api/SignOper/getdoc?id=" + $("#askid").val();
+                
+            });
+            
+            $("#sendbtn").click(function () {
+                $.ajax({
+                    type: "GET",
+                    cache: false,
+                    url: "http://csp.foxconn.com/HRApi/api/userauth/askcode",
+                    data: { id: $("#tel").val() },
+                    dataType: "json",
+                    success: function (data) {
+                        $("#resText").html("请求成功");
+                    },
+                    error: function (ret) {
+                        console.log(ret);
+                    }
+                });
+            });
+            $("#activebtn").click(function () {
+                $.ajax({
+                    type: "GET",
+                    cache: false,
+                    url: "http://csp.foxconn.com/HRApi/api/userauth/authlogin",
+                    data: { id: $("#tel").val(), code: $("#activecode").val() },
+                    dataType: "json",
+                    success: function (data) {
+                        $("#resText").html(data);
+                    },
+                    error: function (ret) {
+                        console.log(ret);
+                        $("#resText").html(ret);
+                    }
+                });
+            });
+            //-------------身份证认证--------------------
+            $("#idcardsubmit").click(function () {
+                var formData = new FormData();
+                formData.append("tel", $("#tel").val());
+                formData.append("idcfront", $("#idcfront").get(0).files[0]);
+                formData.append("idcback", $("#idcback").get(0).files[0]);
+                $.ajax({
+                    url: "http://csp.foxconn.com/HRApi/api/userauth/postidcard",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        $("#resText").empty();
+                        $("#resText").html(data);
+                    }
+                });   
+            });
+            //-------------手写识别
+            $("#hdsubmit").click(function () {
+                var formData = new FormData();
+                formData.append("tel", $("#tel").val());
+                formData.append("imghdw", $("#imgHDW").get(0).files[0]);
+                $.ajax({
+                    url: "http://csp.foxconn.com/HRApi/api/userauth/posthdw",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        $("#resText").empty();
+                        $("#resText").html(data);
+                    }
+                });
+            });
+            //-------------用户人脸验证
+            $("#facesubmit").click(function () {
+                var formData = new FormData();
+                formData.append("tel", $("#tel").val());
+                formData.append("imgface", $("#imgFace").get(0).files[0]);
+                $.ajax({
+                    url: "http://csp.foxconn.com/HRApi/api/userauth/postface",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        $("#resText").empty();
+                        $("#resText").html(data);
+                    }
+                });
+            });
+            //--------------signsubmit 提交签核----------------
+            $("#signsubmit").click(function () {
+                var formData = new FormData();
+                formData.append("tel", $("#tel").val());
+                formData.append("cid", $("#askid").val());
+                formData.append("imghdw", $("#imgHDW").get(0).files[0]);
+                $.ajax({
+                    url: "http://csp.foxconn.com/HRApi/api/SignOper/dosign",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        $("#resText").empty();
+                        $("#resText").html(data);
+                    }
+                });
+            });
+        });
+
+    </script>
+</head>
+<body>
+    <div>
+        用户登录手机号<input type="text" id="tel" value="13812945657" /> <input id="sendbtn" type="button" title="请求认证码" value="请求认证码"  />
+    <br />
+        <br />
+        认证码<input type="text" id="activecode" /> <input id="activebtn" type="button" title="登录认证" value="登录认证" />
+    <br />
+        <br />
+        合同状态
+        <select  id="docstatus">
+            <option value="0">待签列表</option>
+            <option value="1">已签列表</option>
+            <option value="2">完成列表</option>
+            <option value="4">我的所有合同列表</option>
+        </select>
+        <input type="button" id="btnList" value="查看列表" />
+    <br />
+        <br />
+        合同id:<input type="text" id="askid" value="7AF3592B-227E-4F71-AE30-A83400F1D0E7" width="40" />
+        <input type="button" id="download" value="下载合同" />
+        第<input type="text" id="pageindex" />页
+        <input type="button" id="test" value="查看合同" />
+        <br />
+        <br />
+    </div>
+        <div>
+            身份证头像<input id="idcfront" type="file" name="idcfront" />
+            身份证国徽<input id="idcback" type="file" name="idcback"/>
+            <input id="idcardsubmit" type="button" value="身份证认证" /> 
+            <br />
+            <br />
+
+            人脸图片<input id="imgFace" type="file" />
+            <input id="facesubmit" type="button" value="人脸识别" /> 
+            <br />
+            <br />
+            手写<input id="imgHDW" type="file" />
+            <input id="hdsubmit" type="button" value="手写识别" /> 
+            <input id="signsubmit" type="button" value="提交签核" /> 
+            <br />
+            <br />
+        </div>
+        <h4>执行结果</h4>
+        <div id="resText">
+        </div>
+        <img id="imgtest" />
+</body>
+</html>
