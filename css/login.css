@@ -19,7 +19,7 @@ body>header{
 }
 header{
   text-align: center;
-  padding: .493333rem .4rem;
+  padding: .266667rem .4rem;
   height: .64rem;
 }
 header>a{
@@ -68,8 +68,13 @@ article.main{
 [data-dpr="3"] .ipt-group.line-bottom{
   border-bottom: solid .333333px #9e9e9e;;
 } */
+.ipt-group span{
+  font-size: .373333rem;
+  color: #999;
+}
 .ipt-group input{
   font-size: .373333rem;
+  color: #999;
   width: 5.466667rem;
   border: none;
 }
@@ -202,4 +207,32 @@ footer{
 /* 上传按钮隐藏 */
 input[type='file']{
   display: none;
+}
+/* mintUI自定义样式 */
+/****************** 弹出框样式 **/
+[data-dpr="2"] .mint-toast-text{
+  font-size: 28px;
+}
+[data-dpr="3"] .mint-toast-text{
+  font-size: 42px;
+}
+.mint-spinner-fading-circle,.mint-spinner-snake,.mint-spinner-double-bounce{
+  width: .853333rem !important;
+  height: .853333rem !important;
+}
+[data-dpr="2"] .mint-spinner-triple-bounce-bounce1,[data-dpr="2"] .mint-spinner-triple-bounce-bounce2,[data-dpr="2"] .mint-spinner-triple-bounce-bounce3{
+  width: 21.3334px !important;
+  height: 21.3334px !important;
+}
+[data-dpr="3"] .mint-spinner-triple-bounce-bounce1,[data-dpr="3"] .mint-spinner-triple-bounce-bounce2,[data-dpr="3"] .mint-spinner-triple-bounce-bounce3{
+  width: 32px !important;
+  height: 32px !important;
+}
+[data-dpr="2"] .mint-indicator-text {
+  margin-top: 10px;
+  font-size: 32px;
+}
+[data-dpr="3"] .mint-indicator-text {
+  margin-top: 10px;
+  font-size: 48px;
 }

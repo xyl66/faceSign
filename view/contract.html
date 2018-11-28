@@ -9,6 +9,7 @@
   <script src="../js/flexible/flexible.js"></script>
   <title>合同详情</title>
   <!-- 引入样式 -->
+   <link rel="stylesheet" href="../js/mint-ui/lib/style.css">
   <link rel="stylesheet" href="../css/login.css">
   <style>
     body {
@@ -95,76 +96,282 @@
       margin-left: 30px;
     }
   </style>
+  <!-- 人脸识别样式 -->
+  <style>
+    /* 顶部样式 */
+      .top-content{
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .top-content>span{
+        font-size: .346667rem;
+        color: #989898;
+      }
+      /* 识别样式 */
+      .pic-group{
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+      img#face{
+        width: 5.386667rem;
+        height: 5.386667rem;
+      }
+      /* 文本提示样式 */
+      .text-content {
+          margin: 0px .853333rem;
+          border-top: solid 1px #9a9a9a;
+          margin-top: .986667rem;
+          padding: .653333rem 0;
+      }
+      .text-content p{
+        font-size: .426667rem;
+        color: #666;
+      }
+      .text-content ul {
+          font-size: .373333rem;
+          color: #989898;
+          margin-top: .373333rem;
+      }
+      .text-content li {
+          margin-bottom: .426667rem;
+      }
+      /* 按钮位置调整 */
+      .btn-content{
+        margin-top: .813333rem;
+      }
+      /* 隐藏上传文件按钮 */
+      input[type='file']{
+        display: none;
+      }
+      /* 弹出框 */
+      .dialog{
+        display: none;
+        height: 100vh;
+        width: 100vw;
+        background: rgba(0,0,0,.8);
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .dialog.show{
+        display: block;
+      }
+      .dialog section {
+          justify-content: center;
+          padding: 3.12rem 0;
+      }
+      .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 6.666667rem;
+        height: 7.733333rem;
+        background-color: #fff;
+        border-radius: .133333rem;
+      }
+      .card p{
+        font-size: .426667rem;
+        color: #666;
+        margin: .44rem 0 .8rem 0;
+      }
+      .card>img{
+        width: 4.16rem;
+        height: 2.573333rem;
+      }
+      .card button{
+        width: 4.666667rem;
+        height: .933333rem;
+        line-height: .933333rem;
+      }
+      /* 关闭图标 */
+      .card>.close{
+        position: absolute;
+        top: .346667rem;
+        right: .346667rem;
+      }
+      .close img{
+        width: .266667rem;
+        height: .266667rem;
+      }
+      button.success{
+        background-color: #4abe3b;
+      }
+      button.error{
+        background-color: #fa5c58;
+      }
+    </style>
 </head>
 
 <body class="bg-f7">
-  <article>
-    <header class="fixed bg-fff">
-      <a href="./signWait.html"><img src="../img/icon-back.png" alt=""></a>
-      <h1>合同详情</h1>
-    </header>
-    <article class="main" id="main">
-      <section class="contract-content">
-        <div class="view-box">
-          <div v-for="item in contractList" class="zoom">
-            <img class="img-contract" :src="item.src" alt="">
+  <div id="app">
+    <section v-show="step===1">
+      <article>
+        <header class="fixed bg-fff">
+          <a href="./signWait.html"><img src="../img/icon-back.png" alt=""></a>
+          <h1>合同详情</h1>
+        </header>
+        <article class="main">
+          <section class="contract-content">
+            <div class="view-box">
+              <div v-for="item in contractList" class="zoom">
+                <img class="img-contract" :src="item.src" alt="">
+              </div>
+            </div>
+          </section>
+        </article>
+      </article>
+      <footer class="fixed">
+        <section class="sub-content">
+          <button class="btn btn-danger" @click="faceSacn">确认签字</button>
+        </section>
+      </footer>
+      <!-- 签名区域 -->
+      <article id="write">
+        <section class="write-content">
+          <img src="../img/signlogo@2x.png" alt="">
+          <div id="canvas">
           </div>
-        </div>
-      </section>
-    </article>
-  </article>
-  <footer class="fixed">
-    <section class="sub-content">
-      <button class="btn btn-danger" onclick="showWrite()">确认签字</button>
+        </section>
+        <section>
+          <div class="btn-write-content">
+            <button id="clearCanvas" class="btn btn-default btn-small">清除</button>
+            <button id="saveCanvas" class="btn btn-primary btn-small">保存</button>
+            <button class="btn btn-danger btn-small" onclick="hideWrite()">取消</button>
+          </div>
+        </section>
+      </article>
     </section>
-  </footer>
-  <!-- 签名区域 -->
-  <article id="write">
-    <section class="write-content">
-      <img src="../img/signlogo@2x.png" alt="">
-      <div id="canvas">
-      </div>
+    <section v-show="step===2">
+      <header>
+        <a href=""><img src="../img/icon-back.png" alt=""></a>
+        <h1>人脸识别</h1>
+      </header>
+      <article class="main bg-f7">
+        <section class="top-content">
+          <span>人脸识别扫描</span>
+        </section>
+        <section class="pic-content">
+          <div class="pic-group">
+            <img id="face" src="../img/logo-face@2x.png" alt="">
+            <input id="img1" type="file" accept="image/*" capture="camera">
+          </div>
+        </section>
+        <section class="text-content">
+          <p>温馨提示：</p>
+          <ul>
+            <li>
+              1.请将脸放在指定范围内
+            </li>
+            <li>
+              2.请保持正对手机，光线明亮
+            </li>
+            <li>
+              3.请保持良好的网络环境
+            </li>
+          </ul>
+        </section>
+        <section class="btn-content">
+          <button class="btn btn-danger" onclick="upLoad('img1')">开始检测</button>
+        </section>
+      </article>
+      <article class="dialog">
+        <section class="success flex-box">
+          <div class="card">
+            <img src="../img/success.png" alt="">
+            <p>认证成功</p>
+            <button class="btn success" @click="writeHandle">确定</button>
+          </div>
+        </section>
+      </article>
+      <article class="dialog">
+        <section class="error flex-box">
+          <div class="card">
+            <div class="close" onclick="closeHandle()">
+              <img src="../img/close.png" alt="">
+            </div>
+            <img src="../img/error.png" alt="">
+            <p>认证失败</p>
+            <button class="btn error" @click="reTry">重试</button>
+          </div>
+        </section>
+      </article>
+      <footer>
+      </footer>
     </section>
-    <section>
-      <div class="btn-write-content">
-        <button id="clearCanvas" class="btn btn-default btn-small">清除</button>
-        <button id="saveCanvas" class="btn btn-primary btn-small">保存</button>
-        <button class="btn btn-danger btn-small" onclick="hideWrite()">取消</button>
-      </div>
-    </section>
-  </article>
-
+  </div>
 </body>
-<!-- <script src="../js/imgZoom/jquery-1.11.0.min.js"></script>
-<script src="../js/imgZoom/jquery.zoom.js"></script> -->
 <script src="../js/axios/dist/axios.min.js"></script>
-<script src="../js/vue/vue-2.5.17.js"></script>
 <script src="../js/config/config.js"></script>
+<script src="../js/vue/vue-2.5.17.js"></script>
+<!-- 引入组件库 -->
+<script src="../js/mint-ui/lib/index.js"></script>
+<!-- 放在mint组件库后面 -->
+<script src="../js/common.js"></script>
 <script>
-  // window.onload=function(){
-  //   $('#img1').zoom({ on:'toggle' });
-  //   $('#img2').zoom({ on:'toggle' });
-  // }
+  window.onload = function () {
+    bindImgChange('img1', function (e) {
+      var imgs = document.getElementById('img1').files[0]
+      // 下面逻辑处理
+      vm.CurImgBase = imgs
+      vm.upLoadFace()
+    })
+  }
   // 初始化vue
   var vm = new Vue({
-    el: '#main',
+    el: '#app',
     data: {
-      contractList: []
+      contractList: [],
+      cid: '',
+      CurImgBase: null,
+      step: 1
     },
     async mounted() {
-      var askId = '7AF3592B-227E-4F71-AE30-A83400F1D0E7',
-          arr = new Array(5)
-          arr = await Promise.all([this.getImg(askId,'1'),this.getImg(askId,'2'),this.getImg(askId,'3'),this.getImg(askId,'4'),this.getImg(askId,'5')])
-          console.log(arr)
-          this.contractList = arr
+      this.$indicator.open({
+        spinnerType: 'triple-bounce'
+      });
+      var askId = GetQueryString('cid'),
+        res = await this.getImg(askId, '1'),
+        PageCount = res.PageCount
+      this.cid = askId
+      this.contractList.push({
+        src: 'data:image/jpg;base64,' + res.CurImgBase
+      })
+      this.$indicator.close();
+      for (let index = 1; index < PageCount; index++) {
+        var t = await this.getImg(askId, index + 1)
+        this.contractList.push({
+          src: 'data:image/jpg;base64,' + t.CurImgBase
+        })
+      }
     },
     methods: {
-      getImg: getImg
+      getImg: getImg,
+      faceSacn: faceSacn,
+      upLoadFace: upLoadFace,
+      writeHandle: writeHandle,
+      reTry: reTry
     }
   })
+  // 验证成功返回签名
+  function writeHandle() {
+    // 返回签名页面
+    this.step = 1
+    setTimeout(function () {
+      showWrite()
+    }, 0)
+  }
+  // 重试重新发起请求
+  function reTry() {
+    this.upLoadFace()
+  }
 
   function getImg(askId, pageIndex) {
-    return new Promise(function(resolve,reject){
+    return new Promise(function (resolve, reject) {
       var _this = this,
         url = window.webConfig.apiUrl + '/api/SignOper/getdocimg?id=' + askId + '&index=' + pageIndex
       axios.get(url).then(function (res) {
@@ -173,37 +380,47 @@
         if (jsonRet.ReturnCode == 'SUCCESS') {
           var jsDoc = JSON.parse(jsonRet.JsonDesc);
           console.log(jsDoc)
-          resolve({
-            src: 'data:image/jpg;base64,' + jsDoc.CurImgBase
-          }) 
+          resolve(jsDoc)
         }
       })
     })
   }
+
+  function faceSacn() {
+    this.step = 2
+  }
+  // 上传人脸照片
+  function upLoadFace() {
+    var phone = window.sessionStorage.getItem('tel'),
+      formData = new FormData();
+    formData.append("tel", phone);
+    formData.append("imgface", this.CurImgBase);
+    upCard(formData)
+  }
   document.querySelector('body').addEventListener('touchmove', function (e) {
     e.preventDefault();
   })
-
-  function showWrite() {
-    document.getElementById('write').style.display = 'block'
-    var elCanvas = document.querySelector('#canvas>canvas')
-    console.log(elCanvas)
-    if (elCanvas) {
-      return
-    }
-    document.querySelector('#write').addEventListener('touchmove', function (e) {
-      e.preventDefault();
-    })
-    new lineCanvas({
-      el: document.getElementById("canvas"), //绘制canvas的父级div
-      clearEl: document.getElementById("clearCanvas"), //清除按钮
-      saveEl: document.getElementById("saveCanvas"), //保存按钮
-      linewidth: 1, //线条粗细，选填
-      color: "black", //线条颜色，选填
-      background: "#ffffff", //线条背景，选填
-      paddingX: 0, // x轴偏移量
-      paddingY: 0, // y轴偏移量
+  // 图片上传事件
+  function upCard(data) {
+    vm.$indicator.open({
+      spinnerType: 'triple-bounce'
     });
+    var url = window.webConfig.apiUrl + '/api/userauth/postface'
+    axios.post(url, data).then(res => {
+      vm.$indicator.close();
+      var jsonRet = JSON.parse(res.data)
+      if (jsonRet.ReturnCode === 'SUCCESS') {
+        document.querySelectorAll('.dialog')[0].className = 'dialog show'
+
+      } else {
+        document.querySelectorAll('.dialog')[1].className = 'dialog show'
+        vm.$toast(getCodeToMsg(jsonRet.ReturnCode))
+      }
+      // 其他逻辑
+    }).catch(err => {
+      vm.$indicator.close();
+      vm.$toast('系统错误！')
+    })
   }
   // 手写绘制
   function lineCanvas(obj) {
@@ -213,6 +430,7 @@
     for (var i in obj) {
       this[i] = obj[i];
     };
+    console.log(this.el)
     this.paddingX = this.el.getBoundingClientRect().left
     this.paddingY = this.el.getBoundingClientRect().top
     this.canvas = document.createElement("canvas");
@@ -247,38 +465,66 @@
     //保存图片，直接转base64
     this.saveEl.addEventListener("click", function () {
       var imgBase64 = this.canvas.toDataURL();
-      console.log(imgBase64);
-      getWord(imgBase64.slice(imgBase64.indexOf('base64,') + 7))
+      uploadWord(imgBase64)
     }.bind(this), false);
   };
   // 上传图片识别文字
-  function getWord(img) {
-    var data = {
-      "image": img
-    }
-    window.location.href = './success.html'
-    return
-
-    console.log(data)
-    axios.post(
-      'https://aip.baidubce.com/rest/2.0/ocr/v1/handwriting?access_token=24.dd0eadfa426d925ed074f7b394cf8b1d.2592000.1544606864.282335-14774800',
-      Qs.stringify(data)).then(res => {
-      console.log(res)
-      if (res.data.error_code) {
-        document.getElementById('error').style.display = 'inline'
-        document.getElementById('success').style.display = 'none'
-        document.getElementById('error').innerHTML = '错误码:' + res.data.error_code + ';  错误提示:' + res.data.error_msg
+  function uploadWord(base64Img) {
+    vm.$indicator.open({
+      spinnerType: 'triple-bounce'
+    });
+    var file = dataURLtoFile(base64Img)
+    url = window.webConfig.apiUrl + '/api/SignOper/dosign',
+      formData = new FormData();
+    formData.append("tel", window.sessionStorage.getItem('tel'));
+    formData.append("cid", vm.cid);
+    formData.append("imghdw", file);
+    axios.post(url, formData).then(res => {
+      vm.$indicator.close();
+      var jsonRet = JSON.parse(res.data)
+      if (jsonRet.ReturnCode === 'SUCCESS') {
+        // 跳转页面
+        window.location.href = './success.html'
       } else {
-        checkTwo(res.data.result.face_list[0].face_token)
+        vm.$toast(getCodeToMsg(jsonRet.ReturnCode))
       }
+      // 其他逻辑
+    }).catch(err => {
+      vm.$indicator.close();
+      vm.$toast('系统错误！')
     })
   }
-
+  // 显示手写框
+  function showWrite() {
+    document.getElementById('write').style.display = 'block'
+    var elCanvas = document.querySelector('#canvas>canvas')
+    if (elCanvas) {
+      return
+    }
+    document.querySelector('#write').addEventListener('touchmove', function (e) {
+      e.preventDefault();
+    })
+    new lineCanvas({
+      el: document.getElementById("canvas"), //绘制canvas的父级div
+      clearEl: document.getElementById("clearCanvas"), //清除按钮
+      saveEl: document.getElementById("saveCanvas"), //保存按钮
+      linewidth: 1, //线条粗细，选填
+      color: "black", //线条颜色，选填
+      background: "#ffffff", //线条背景，选填
+      paddingX: 0, // x轴偏移量
+      paddingY: 0, // y轴偏移量
+    });
+  }
+  // 隐藏手写框
   function hideWrite() {
     document.getElementById('write').style.display = 'none'
     document.querySelector('#write').addEventListener('touchmove', function (e) {
 
     })
+  }
+  // 关闭弹窗
+  function closeHandle() {
+    document.querySelector('.show').style.display = 'none'
   }
 </script>
 

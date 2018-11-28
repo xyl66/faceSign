@@ -10,7 +10,7 @@
   <!-- less -->
   <link rel="stylesheet/less" href="../css/style.less">
   <script src="../js/less/less.min.js"></script>
-  <title>填写邮箱</title>
+  <title>合同列表</title>
   <!-- 引入样式 -->
 
   <link rel="stylesheet" href="../css/login.css">
@@ -18,48 +18,14 @@
 
 <body>
   <header>
-      <a href=""><img src="../img/icon-back.png" alt=""></a>
       <h1>已签合同</h1>
   </header>
-  <article class="main bg-f7">
+  <article class="main bg-f7" id="app">
     <section class="list-content">
       <ul>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-          <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
-        <li class="list-item flex-box flex-space-between flex-aligin-center">
-            <span>客户询证函4971110D0118060014</span><img src="../img/icon-right@3x.png" alt="">
-        </li>
+          <li v-for="item in list" class="list-item flex-box flex-space-between flex-aligin-center" @click="showContract(item.cid)">
+              <span>{{item.DocName}}</span><img src="../img/icon-right@3x.png" alt="">
+          </li>
       </ul>
     </section>
   </article>
@@ -86,5 +52,49 @@
     </ul>
   </footer>
 </body>
+<!-- 引入js -->
+<script src="../js/axios/dist/axios.min.js"></script>
+<script src="../js/config/config.js"></script>
+<script src="../js/vue/vue-2.5.17.js"></script>
+<!-- 引入组件库 -->
+<script src="../js/mint-ui/lib/index.js"></script>
+<!-- 放在mint组件库后面 -->
+<script src="../js/common.js"></script>
+<script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      phone: '',
+      list: [{
+        "sid": "eaa74a59-7f35-45b9-aa90-a8a100fa8d22",
+        "cid": "7AF3592B-227E-4F71-AE30-A83400F1D0E7",
+        "DocName": "客户询证函4971110D0118060014",
+        "PartA": "huang",
+        "PartB": "huang",
+        "UpdateDT": "2018-03-12T15:12:13.733",
+        "Status": "待签"
+      }]
+    },
+    mounted() {
+      var _this = this
+        _this.phone = window.sessionStorage.getItem('tel')
+      var url = window.webConfig.apiUrl + '/api/SignOper/getlist?id=' + _this.phone + '&status=1'
+      request.get(url,_this).then(function (res) {
+        var jsonRet = JSON.parse(res.data)
+        if (jsonRet.ReturnCode === 'SUCCESS') {
+          _this.list = JSON.parse(jsonRet.JsonDesc)
+        } else {
+          _this.$toast(getCodeToMsg(jsonRet.ReturnCode))
+        }
+      })
+    },
+    methods: {
+      showContract: showContract
+    }
+  })
 
+  function showContract(val) {
+    window.location.href='./contract.html?cid='+val
+  }
+</script>
 </html>

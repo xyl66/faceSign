@@ -12,7 +12,7 @@
     <script src="../js/less/less.min.js"></script>
     <title>个人中心</title>
     <!-- 引入样式 -->
-
+    <link rel="stylesheet" href="../js/mint-ui/lib/style.css">
     <link rel="stylesheet" href="../css/login.css">
     <style>
         /* 顶部背景 */
@@ -102,7 +102,7 @@
             <h1>个人中心</h1>
         </header>
     </section>
-    <article>
+    <article id="app">
         <section class="info-content">
             <div class="card-box">
                 <section class="header">
@@ -112,15 +112,15 @@
                     <ul>
                         <li>
                             <img src="../img/phone@2x.png" alt="">
-                            <p>手机号:<span class="body">12345678900</span></p>
+                            <p>手机号:<span class="body">{{phone}}</span></p>
                         </li>
                         <li>
                             <img src="../img/email@2x.png" alt="">
-                            <p>邮 箱:<span class="body">492113976@qq.com</span></p>
+                            <p>邮 箱:<span class="body">{{email}}</span></p>
                         </li>
                         <li>
                             <img src="../img/icon-identify@2x.png" alt="">
-                            <p>认证状态:<span class="body">已认证</span></p>
+                            <p>认证状态:<span class="body">{{auth}}</span></p>
                         </li>
                     </ul>
                 </section>
@@ -150,5 +150,36 @@
         </ul>
     </footer>
 </body>
-
+<script src="../js/axios/dist/axios.min.js"></script>
+<script src="../js/config/config.js"></script>
+<script src="../js/vue/vue-2.5.17.js"></script>
+<!-- 引入组件库 -->
+<script src="../js/mint-ui/lib/index.js"></script>
+<!-- 放在mint组件库后面 -->
+<script src="../js/common.js"></script>
+<script>
+var vm =new Vue({
+    el:'#app',
+    data(){
+        return {
+            phone:'- -',
+            email:'- -',
+            auth:'- -'
+        }
+    },
+    mounted(){
+        var _this=this
+        this.phone = window.sessionStorage.getItem('tel')
+        var url =  window.webConfig.apiUrl + '/api/userauth/getinfo?id=' + this.phone
+        request.get(url,this).then(function(res){
+            var jsonRet = JSON.parse(res.data)
+            if (jsonRet.ReturnCode === 'SUCCESS') {
+                var t = JSON.parse(jsonRet.JsonDesc)
+                _this.email=t.mail
+                _this.auth = t.isVerified? '已认证':'未认证'
+            }
+        })
+    }
+})
+</script>
 </html>
