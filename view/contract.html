@@ -156,7 +156,7 @@
         top: 0;
         left: 0;
       }
-      .dialog.show{
+      .dialog.is-active{
         display: block;
       }
       .dialog section {
@@ -410,10 +410,10 @@
       vm.$indicator.close();
       var jsonRet = JSON.parse(res.data)
       if (jsonRet.ReturnCode === 'SUCCESS') {
-        document.querySelectorAll('.dialog')[0].className = 'dialog show'
+        document.querySelectorAll('.dialog')[0].className = 'dialog is-active'
 
       } else {
-        document.querySelectorAll('.dialog')[1].className = 'dialog show'
+        document.querySelectorAll('.dialog')[1].className = 'dialog is-active'
         vm.$toast(getCodeToMsg(jsonRet.ReturnCode))
       }
       // 其他逻辑
@@ -524,7 +524,7 @@
   }
   // 关闭弹窗
   function closeHandle() {
-    document.querySelector('.show').style.display = 'none'
+    document.querySelector('.is-active').className = 'dialog'
   }
 </script>
 
