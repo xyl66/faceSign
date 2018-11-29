@@ -125,7 +125,7 @@
   //   };
   //   })
   // }
-  function submit() {
+  async function submit() {
     var _this = this
         formData = new FormData(),
         imgFront = document.getElementById('img1').files[0],
@@ -138,6 +138,15 @@
       _this.$toast('请上传身份证背面照')
       return
     }
+    _this.$indicator.open({
+          spinnerType: 'triple-bounce'
+    });
+    var base64One = await photoCompress(imgFront,{})
+    document.getElementById('pic1').src = base64One
+    imgFront=dataURLtoFile(base64One)
+    var base64Two = await photoCompress(imgBack,{})
+    document.getElementById('pic2').src = base64Two
+    imgBack=dataURLtoFile(base64Two)
     formData.append("tel", this.phone);
     formData.append("idcfront", imgFront);
     formData.append("idcback",imgBack);

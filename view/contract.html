@@ -295,7 +295,7 @@
               <img src="../img/close.png" alt="">
             </div>
             <img src="../img/error.png" alt="">
-            <p>认证失败</p>
+            <p>网络错误</p>
             <button class="btn error" @click="reTry">重试</button>
           </div>
         </section>
@@ -410,16 +410,15 @@
       vm.$indicator.close();
       var jsonRet = JSON.parse(res.data)
       if (jsonRet.ReturnCode === 'SUCCESS') {
-        document.querySelectorAll('.dialog')[0].className = 'dialog is-active'
+        document.querySelectorAll('.dialog')[0].className += ' is-active'
 
       } else {
-        document.querySelectorAll('.dialog')[1].className = 'dialog is-active'
         vm.$toast(getCodeToMsg(jsonRet.ReturnCode))
       }
       // 其他逻辑
     }).catch(err => {
       vm.$indicator.close();
-      vm.$toast('系统错误！')
+      document.querySelectorAll('.dialog')[1].className = 'dialog is-active'
     })
   }
   // 手写绘制
