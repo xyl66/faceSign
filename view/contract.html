@@ -9,7 +9,7 @@
   <script src="../js/flexible/flexible.js"></script>
   <title>合同详情</title>
   <!-- 引入样式 -->
-   <link rel="stylesheet" href="../js/mint-ui/lib/style.css">
+  <link rel="stylesheet" href="../js/mint-ui/lib/style.css">
   <link rel="stylesheet" href="../css/login.css">
   <style>
     body {
@@ -334,19 +334,24 @@
       this.$indicator.open({
         spinnerType: 'triple-bounce'
       });
-      var askId = GetQueryString('cid'),
-        res = await this.getImg(askId, '1'),
-        PageCount = res.PageCount
-      this.cid = askId
-      this.contractList.push({
-        src: 'data:image/jpg;base64,' + res.CurImgBase
-      })
-      this.$indicator.close();
-      for (let index = 1; index < PageCount; index++) {
-        var t = await this.getImg(askId, index + 1)
+      try {
+        var askId = GetQueryString('cid'),
+          res = await this.getImg(askId, '0'),
+          PageCount = res.PageCount
+        this.cid = askId
         this.contractList.push({
-          src: 'data:image/jpg;base64,' + t.CurImgBase
+          src: 'data:image/jpg;base64,' + res.CurImgBase
         })
+        this.$indicator.close();
+        for (let index = 1; index < PageCount; index++) {
+          var t = await this.getImg(askId, index)
+          this.contractList.push({
+            src: 'data:image/jpg;base64,' + t.CurImgBase
+          })
+        }
+      } catch (error) {
+        this.$indicator.close();
+        this.$toast(getCodeToMsg(error))
       }
     },
     methods: {
@@ -381,6 +386,8 @@
           var jsDoc = JSON.parse(jsonRet.JsonDesc);
           console.log(jsDoc)
           resolve(jsDoc)
+        } else {
+          reject(jsonRet.ReturnCode)
         }
       })
     })
@@ -413,7 +420,9 @@
         document.querySelectorAll('.dialog')[0].className += ' is-active'
 
       } else {
-        vm.$toast(getCodeToMsg(jsonRet.ReturnCode))
+        var JsonDesc = JSON.parse(jsonRet.JsonDesc),
+        errMsg = jsonRet.ReturnCode==='FACEIMGERROR'?getCodeToMsg(jsonRet.ReturnCode)+'('+JsonDesc.error_msg+')':getCodeToMsg(jsonRet.ReturnCode)
+        vm.$toast(errMsg)
       }
       // 其他逻辑
     }).catch(err => {
