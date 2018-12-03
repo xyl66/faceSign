@@ -70,7 +70,7 @@
     }
 
     .write-content {
-      margin: 1.84rem .4rem 0 .4rem;
+      margin: 10.84rem .4rem 0 .4rem
     }
 
     .write-content img {
@@ -82,7 +82,7 @@
 
     #canvas {
       width: 9.2rem;
-      height: 12.266667rem;
+      height: 4rem;
       border: dotted 1px #fa5c58;
     }
 
@@ -314,10 +314,13 @@
 <script src="../js/common.js"></script>
 <script>
   window.onload = function () {
-    bindImgChange('img1', function (e) {
+    bindImgChange('img1',async function (e) {
       var imgs = document.getElementById('img1').files[0]
       // 下面逻辑处理
-      vm.CurImgBase = imgs
+      var base64 = await photoCompress(imgs,{width:600,height:800})
+      // var imgel=document.createElement('img')
+      // imgel.src=base64
+      vm.CurImgBase = dataURLtoFile(base64)
       vm.upLoadFace()
     })
   }
@@ -432,13 +435,13 @@
   }
   // 手写绘制
   function lineCanvas(obj) {
-    this.linewidth = 1;
+    this.linewidth = 1; // 线条粗细
     this.color = "#000";
     this.background = "#fff";
     for (var i in obj) {
       this[i] = obj[i];
     };
-    console.log(this.el)
+    this.linewidth = window.document.documentElement.getAttribute('data-dpr')?this.linewidth*parseInt(window.document.documentElement.getAttribute('data-dpr')):this.linewidth
     this.paddingX = this.el.getBoundingClientRect().left
     this.paddingY = this.el.getBoundingClientRect().top
     this.canvas = document.createElement("canvas");
@@ -447,7 +450,7 @@
     this.canvas.width = this.el.clientWidth;
     this.canvas.height = this.el.clientHeight;
     this.cxt.fillStyle = this.background;
-    this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.width);
+    this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.cxt.strokeStyle = this.color;
     this.cxt.lineWidth = this.linewidth;
     this.cxt.lineCap = "round";
@@ -469,11 +472,15 @@
     //清除画布
     this.clearEl.addEventListener("click", function () {
       this.cxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }.bind(this), false);
     //保存图片，直接转base64
-    this.saveEl.addEventListener("click", function () {
-      var imgBase64 = this.canvas.toDataURL();
-      uploadWord(imgBase64)
+    this.saveEl.addEventListener("click",async function () {
+      var imgBase64 = this.canvas.toDataURL('image/jpeg');
+      var base64 = await canvasDataURL(imgBase64,{width:69,height:30,quality:1})
+      // var imgel=document.createElement('img')
+      // imgel.src=base64
+      uploadWord(base64)
     }.bind(this), false);
   };
   // 上传图片识别文字
@@ -482,11 +489,11 @@
       spinnerType: 'triple-bounce'
     });
     var file = dataURLtoFile(base64Img)
-    url = window.webConfig.apiUrl + '/api/SignOper/dosign',
+    url = window.webConfig.apiUrl + '/api/SignOper/dobsign',
       formData = new FormData();
     formData.append("tel", window.sessionStorage.getItem('tel'));
     formData.append("cid", vm.cid);
-    formData.append("imghdw", file);
+    formData.append("imghdw", base64Img.slice(base64Img.indexOf('base64,')+7));
     axios.post(url, formData).then(res => {
       vm.$indicator.close();
       var jsonRet = JSON.parse(res.data)
@@ -494,7 +501,7 @@
         // 跳转页面
         window.location.href = './success.html'
       } else {
-        vm.$toast(getCodeToMsg(jsonRet.ReturnCode))
+        vm.$toast(getCodeToMsg(jsonRet.ReturnCode)+','+jsonRet.JsonDesc)
       }
       // 其他逻辑
     }).catch(err => {

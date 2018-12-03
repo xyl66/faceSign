@@ -221,7 +221,7 @@
     this.canvas.width = this.el.clientWidth;
     this.canvas.height = this.el.clientHeight;
     this.cxt.fillStyle = this.background;
-    this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.width);
+    this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.cxt.strokeStyle = this.color;
     this.cxt.lineWidth = this.linewidth;
     this.cxt.lineCap = "round";
@@ -243,6 +243,7 @@
     //清除画布
     this.clearEl.addEventListener("click", function () {
       this.cxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }.bind(this), false);
     //保存图片，直接转base64
     this.saveEl.addEventListener("click", function () {
