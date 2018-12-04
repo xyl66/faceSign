@@ -63,13 +63,15 @@
       }
     },
     mounted() {
-      this.phone = window.sessionStorage.getItem('tel')
+      this.phone = window.sessionStorage.getItem('tel') // 获取手机号
     },
     methods: {
       submit: submit
     }
   })
-
+  /**
+   * 提交操作
+   */
   function submit() {
     var _this = this,
       phone = _this.phone,

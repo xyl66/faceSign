@@ -29,8 +29,8 @@
         <button @click="send">获取验证码</button>
       </div>
       <div class="ipt-group line-bottom">
-          <img src="../img/icon-viste.png" alt="" srcset="">
-          <input id="code" type="text" class="ipt-viste" placeholder="请输入验证码">
+        <img src="../img/icon-viste.png" alt="" srcset="">
+        <input id="code" type="text" class="ipt-viste" placeholder="请输入验证码">
       </div>
       <div class="ipt-group viste-call"><img src="../img/icon-w.png" alt="" srcset=""><span>收不到短信，试试<a href="">语音验证码</a></span></div>
     </section>
@@ -48,83 +48,113 @@
   <!-- <script src="../js/mint-ui/lib/index.js"></script> -->
   <script src="../js/mint-ui/lib/index.js"></script>
   <!-- 放在mint组件库后面 -->
-<script src="../js/common.js"></script>
+  <script src="../js/common.js"></script>
   <script>
-    var timeClock = null
-    var vm = new Vue({
+    var timeClock = null,
+    vm = new Vue({
       el: '#app',
       methods: {
         submit: submit,
-        send:send
+        send: send
       }
     })
-    function send(){
-      var reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
-      if(!reg.test(document.getElementById('phone').value)){
+    /**
+     * 发送验证码
+     */
+    function send() {
+      var reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/ // 手机号正则
+      // 验证手机号
+      if (!reg.test(document.getElementById('phone').value)) {
         vm.$toast('手机号码格式错误')
-        return 
-      }
-      if(timeClock){
         return
       }
-      var _this=this
-          phone = document.getElementById('phone').value,
-          url = window.webConfig.apiUrl + '/api/userauth/askcode?id='+phone,
-          el = event.target,
-          time = 60
-          request.get(url,_this).then(function(res){
-            console.log(res)
-            if(res.data!=='SUCCESS'){
-              _this.$toast(getCodeToMsg(res.data))
-            }else{
-              _this.$toast('发送成功!')
-              // 定时器
-              timeClock = setInterval(function(){
-                time--
-                if(time>0){
-                  el.innerHTML=`${time}秒`
-                }else{
-                  clearInterval(timeClock)
-                  timeClock=null
-                  el.disabled=false
-                  el.innerHTML='发送验证码'
-                }
-              },1000)
-            }
-          }).catch(function(err){
-            _this.$toast('错误:'+err)
-          })
+      // 是否已发送验证码
+      if (timeClock&&timeClock.timeClock) {
+        return
+      }
+      var _this = this,
+        phone = document.getElementById('phone').value,
+        url = window.webConfig.apiUrl + '/api/userauth/askcode?id=' + phone, // 请求地址
+        el = event.target
+        timeClock = timeClock ? timeClock: new Clock(function(res){ // 实例化定时器
+          el.innerHTML = `${res}秒`
+        },function(){
+          el.disabled = false
+          el.innerHTML = '发送验证码'
+        })
+      // common.js中request
+      request.get(url, _this).then(function (res) {
+        console.log(res)
+        if (res.data !== 'SUCCESS') {
+          _this.$toast(getCodeToMsg(res.data))
+        } else {
+          _this.$toast('发送成功!')
+          // 定时器启动 倒计时发送验证码
+          timeClock.start()
+        }
+      }).catch(function (err) {
+        _this.$toast('错误:' + err)
+      })
     }
-    function submit(){
-      var _this = this
-          phone = document.getElementById('phone').value,
-          code = document.getElementById('code').value,
-          url = window.webConfig.apiUrl + '/api/userauth/authlogin?id='+phone+'&code='+code,
-          reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
-          if(!reg.test(document.getElementById('phone').value)){
-            _this.$toast('手机号码格式错误')
-            return 
-          }
-          if(code===''){
-            _this.$toast('请输入验证码')
-            return 
-          }
-          request.get(url,_this).then(function(res){
-            if(res.data==='SUCCESS'){
-              // 登录成功
-              window.sessionStorage.setItem('tel',phone)
-              // 跳转页面
-              window.location.href='./signWait.html'
-            }else if(res.data==='UNAUTHENTICATED'){
-              // 未实名认证
-              window.sessionStorage.setItem('tel',phone)
-              window.location.href='./email.html'
-            }else{
-              _this.$toast(getCodeToMsg(res.data))              
+    // 定时器
+    /**
+     * @param {function} callback1 未到时执行函数 返回当前剩余间隔
+     * @param {function} callback2 到时执行函数
+     */
+    function Clock(callback1,callback2) {
+      this.timeClock = null
+      this.time = 60 //定时间隔
+      this.start = function(){
+        var _this = this,
+        time = this.time
+        this.timeClock = setInterval(function () {
+            time--
+            if (time > 0) {
+              callback1(time) // 未到时执行函数
+            } else {
+              _this.end() // 关闭定时器
+              callback2() // 到时执行函数
             }
-          }).catch(err=>{
-            console.log(err)
-          })
+          }, 1000)
+      }
+      this.end = function () {
+        clearInterval(this.timeClock) // 清除定时器
+        this.timeClock = null
+      }
+    }
+    /**
+     * 提交 
+     **/
+    function submit() {
+      var _this = this
+      phone = document.getElementById('phone').value,
+        code = document.getElementById('code').value,
+        url = window.webConfig.apiUrl + '/api/userauth/authlogin?id=' + phone + '&code=' + code,
+        reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
+      if (!reg.test(document.getElementById('phone').value)) {
+        _this.$toast('手机号码格式错误')
+        return
+      }
+      if (code === '') {
+        _this.$toast('请输入验证码')
+        return
+      }
+      request.get(url, _this).then(function (res) {
+        if (res.data === 'SUCCESS') {
+          // 登录成功
+          window.sessionStorage.setItem('tel', phone)
+          // 跳转页面
+          window.location.href = './signWait.html'
+        } else if (res.data === 'UNAUTHENTICATED') {
+          // 未实名认证
+          window.sessionStorage.setItem('tel', phone)
+          window.location.href = './email.html'
+        } else {
+          _this.$toast(getCodeToMsg(res.data))
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
   </script>
 </body>
