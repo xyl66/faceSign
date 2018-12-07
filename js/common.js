@@ -144,7 +144,7 @@
     },
   }
   /**
-   *旋转90°
+   *canvas 图片旋转90°
    *
    * @param {*} imgUrl
    * @param {*} type
