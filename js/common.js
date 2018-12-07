@@ -45,7 +45,7 @@
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n)
     }
-    return new File([u8arr], `${filename}.${suffix}`, {
+    return new File([u8arr], filename+'.'+suffix, {
       type: mime
     })
   }
@@ -143,7 +143,40 @@
       })
     },
   }
-
+  /**
+   *旋转90°
+   *
+   * @param {*} imgUrl
+   * @param {*} type
+   * @returns
+   */
+  function rotate90(imgUrl,type) {
+    return new Promise(function (resolve, reject) {
+      try {
+        // 1. 创建图片，canvas,获取画布
+        var img = new Image(),
+          canvas = document.createElement('canvas'),
+          ctx = canvas.getContext('2d');
+        img.src = imgUrl
+        // 2. 图片加载完成进行图片编辑
+        img.onload = function () {
+          // 2.1 设置canvas宽高，旋转90° ，宽高互换
+          canvas.width = this.height
+          canvas.height = this.width
+          // 2.2 画布中心点(也是起始点)平移至中心(0,0)->(x,y)
+          ctx.translate(canvas.width / 2, canvas.height / 2)
+          // 2.3 画布旋转90°
+          ctx.rotate(270 * Math.PI / 180)
+          // 2.4 绘制图像 图像起始点需偏移负宽高
+          ctx.drawImage(img, -this.width / 2, -this.height / 2)
+          // 2.5返回结果(base64)
+          resolve(canvas.toDataURL(type))
+        }
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
   /**
    *是否登录
    *根据sessionStorage tel判断是否登录

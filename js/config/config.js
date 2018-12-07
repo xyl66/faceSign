@@ -52,7 +52,7 @@ function getCodeToMsg(code){
     break;
     case 'DBERROR ': result='更新数据错误';
     break;
-    default: result='未知错误';
+    default: result='未知错误'+code;
   }
   return result
 }

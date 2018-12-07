@@ -314,7 +314,7 @@
     bindImgChange('img1',async function (e) {
       var imgs = document.getElementById('img1').files[0]
       // 下面逻辑处理
-      var base64 = await photoCompress(imgs,{width:600,height:800})
+      var base64 = await photoCompress(imgs,{width:600})
       // var imgel=document.createElement('img')
       // imgel.src=base64
       vm.CurImgBase = dataURLtoFile(base64)
@@ -404,6 +404,7 @@
     var phone = window.sessionStorage.getItem('tel'),
       formData = new FormData();
     formData.append("tel", phone);
+    formData.append("cid", this.cid);
     formData.append("imgface", this.CurImgBase);
     upCard(formData)
   }
@@ -416,14 +417,16 @@
     vm.$indicator.open({
       spinnerType: 'triple-bounce'
     });
-    var url = window.webConfig.apiUrl + '/api/userauth/postface'
+    // var url = window.webConfig.apiUrl + '/api/userauth/postface' // 
+    var url = window.webConfig.apiUrl + '/api/SignOper/facesign' // 
     // 请求数据
     axios.post(url, data).then(res => {
       vm.$indicator.close();
       var jsonRet = JSON.parse(res.data)
       if (jsonRet.ReturnCode === 'SUCCESS') {
-        document.querySelectorAll('.dialog')[0].className += ' is-active'
-
+        // document.querySelectorAll('.dialog')[0].className += ' is-active' // 显示签名区
+        // 跳转页面
+        window.location.href = './success.html'
       } else {
         var JsonDesc = JSON.parse(jsonRet.JsonDesc),
         errMsg = jsonRet.ReturnCode==='FACEIMGERROR'?getCodeToMsg(jsonRet.ReturnCode)+'('+JsonDesc.error_msg+')':getCodeToMsg(jsonRet.ReturnCode)

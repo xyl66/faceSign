@@ -77,7 +77,7 @@
         url = window.webConfig.apiUrl + '/api/userauth/askcode?id=' + phone, // 请求地址
         el = event.target
         timeClock = timeClock ? timeClock: new Clock(function(res){ // 实例化定时器
-          el.innerHTML = `${res}秒`
+          el.innerHTML = res+'秒'
         },function(){
           el.disabled = false
           el.innerHTML = '发送验证码'
