@@ -8,8 +8,8 @@
   <meta content="telephone=no,email=no" name="format-detection">
   <script src="../js/flexible/flexible.js"></script>
   <!-- less -->
-  <link rel="stylesheet/less" href="../css/style.less">
-  <script src="../js/less/less.min.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  
   <title>合同列表</title>
   <!-- 引入样式 -->
 
@@ -53,7 +53,9 @@
   </footer>
 </body>
 <!-- 引入js -->
-<script src="../js/axios/dist/axios.min.js"></script>
+<script src="../js/polyfill.min.js"></script>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="../js/config/config.js"></script>
 <script src="../js/vue/vue-2.5.17.js"></script>
 <!-- 引入组件库 -->
@@ -75,7 +77,7 @@
         "Status": "待签"
       }]
     },
-    mounted() {
+    mounted: function() {
       var _this = this
         _this.phone = window.sessionStorage.getItem('tel')
       var url = window.webConfig.apiUrl + '/api/SignOper/getlist?id=' + _this.phone + '&status=1'

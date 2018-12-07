@@ -74,7 +74,9 @@
   <footer>
   </footer>
 </body>
-<script src="../js/axios/dist/axios.min.js"></script>
+<script src="../js/polyfill.min.js"></script>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="../js/config/config.js"></script>
 <script src="../js/vue/vue-2.5.17.js"></script>
 <!-- 引入组件库 -->
@@ -84,14 +86,12 @@
 <script>
   var vm = new Vue({
     el: '#app',
-    data() {
-      return {
+    data: {
         phone: '',
         imgfront: '',
         imgback: ''
-      }
     },
-    mounted() {
+    mounted: function() {
       var _this = this
       _this.phone = window.sessionStorage.getItem('tel')
       bindImgChange('img1', function (e) {
@@ -125,7 +125,7 @@
   //   };
   //   })
   // }
-  async function submit() {
+  function submit() {
     var _this = this
         formData = new FormData(),
         imgFront = document.getElementById('img1').files[0],
@@ -141,32 +141,40 @@
     _this.$indicator.open({
           spinnerType: 'triple-bounce'
     });
-    var base64One = await photoCompress(imgFront,{}) // 压缩图片
-    document.getElementById('pic1').src = base64One
-    imgFront=dataURLtoFile(base64One) // base64转file
-    var base64Two = await photoCompress(imgBack,{}) // 压缩图片
-    document.getElementById('pic2').src = base64Two
-    imgBack=dataURLtoFile(base64Two) // base64转file
+    // 压缩图片
+    // photoCompress(imgFront,{},function(base64One){
+    //   document.getElementById('pic1').src = base64One
+    //   imgFront=dataURLtoFile(base64One) // base64转file
+    //   photoCompress(imgBack,{},function(base64Two){
+    //     document.getElementById('pic2').src = base64Two
+    //     // 设置参数
+    //     formData.append("tel", this.phone); 
+    //     formData.append("idcfront", imgFront);
+    //     formData.append("idcback",imgBack);
+    //     upCard.call(_this,formData) // 调用上传方法
+    //   })
+    // })
     // 设置参数
     formData.append("tel", this.phone); 
-    formData.append("idcfront", imgFront);
-    formData.append("idcback",imgBack);
-    upCard.call(_this,formData) // 调用上传方法
+        formData.append("idcfront", imgFront);
+        formData.append("idcback",imgBack);
+        upCard.call(_this,formData) // 调用上传方法
   }
   // 图片上传事件
   function upCard(data) {
-    var url = window.webConfig.apiUrl + '/api/userauth/postidcard' // 上传地址
-    request.post(url,data,vm).then(res => {
+    var url = window.webConfig.apiUrl + '/api/userauth/postidcard', // 上传地址
+    _this =this
+    request.post(url,data,vm).then(function(res){
       var jsonRet = JSON.parse(res.data) // 序列化返回结果
       if (jsonRet.ReturnCode  === 'SUCCESS') {
         // 跳转页面
         window.location.href = './signWait.html'
       }else {
-        this.$toast(getCodeToMsg(jsonRet.ReturnCode))
+        _this.$toast(getCodeToMsg(jsonRet.ReturnCode))
       }
       // 其他逻辑
-    }).catch(err=>{
-      this.$toast('系统错误！')
+    }).catch(function(err){
+      _this.$toast('系统错误！')
     })
   }
 </script>

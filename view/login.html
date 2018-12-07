@@ -41,7 +41,10 @@
   <footer>
     <span>本服务由亿签网技术支持</span>
   </footer>
-  <script src="../js/axios/dist/axios.min.js"></script>
+  <script src="../js/polyfill.min.js"></script>
+
+  <script src="../js/polyfill.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="../js/config/config.js"></script>
   <script src="../js/vue/vue-2.5.17.js"></script>
   <!-- 引入组件库 -->
@@ -152,7 +155,7 @@
         } else {
           _this.$toast(getCodeToMsg(res.data))
         }
-      }).catch(err => {
+      }).catch(function(err){
         console.log(err)
       })
     }

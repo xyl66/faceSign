@@ -46,7 +46,9 @@
     <span>本服务由亿签网技术支持</span>
   </footer>
 </body>
-<script src="../js/axios/dist/axios.min.js"></script>
+<script src="../js/polyfill.min.js"></script>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="../js/config/config.js"></script>
 <script src="../js/vue/vue-2.5.17.js"></script>
 <!-- 引入组件库 -->
@@ -56,13 +58,11 @@
 <script>
   new Vue({
     el: '#app',
-    data() {
-      return {
+    data: {
         phone: '',
         email: ''
-      }
     },
-    mounted() {
+    mounted: function() {
       this.phone = window.sessionStorage.getItem('tel') // 获取手机号
     },
     methods: {

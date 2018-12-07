@@ -302,7 +302,9 @@
     </section>
   </div>
 </body>
-<script src="../js/axios/dist/axios.min.js"></script>
+<script src="../js/polyfill.min.js"></script>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="../js/config/config.js"></script>
 <script src="../js/vue/vue-2.5.17.js"></script>
 <!-- 引入组件库 -->
@@ -311,14 +313,17 @@
 <script src="../js/common.js"></script>
 <script>
   window.onload = function () {
-    bindImgChange('img1',async function (e) {
+    bindImgChange('img1',function (e) {
       var imgs = document.getElementById('img1').files[0]
       // 下面逻辑处理
-      var base64 = await photoCompress(imgs,{width:600})
+      photoCompress(imgs,{width:600},function(base64){
+        var imgel=new Image()
+        imgel.src=base64
+        vm.CurImgBase = dataURLtoFile(base64)
+        vm.upLoadFace()
+      })
       // var imgel=document.createElement('img')
       // imgel.src=base64
-      vm.CurImgBase = dataURLtoFile(base64)
-      vm.upLoadFace()
     })
   }
   // 初始化vue
@@ -331,26 +336,29 @@
       step: 1,
       isFinish: 0
     },
-    async mounted() {
+     mounted:function() {
       this.$indicator.open({
         spinnerType: 'triple-bounce'
       });
       try {
         var askId = GetQueryString('cid'),
-          res = await this.getImg(askId, '0'), // 获取第一页合同
-          PageCount = res.PageCount
-        this.cid = askId
-        this.isFinish = parseInt(GetQueryString('finish'))
-        this.contractList.push({ // 合同放入列表
-          src: 'data:image/jpg;base64,' + res.CurImgBase
-        })
-        this.$indicator.close();
-        for (let index = 1; index < PageCount; index++) { // 循环获取剩余页合同
-          var t = await this.getImg(askId, index)
-          this.contractList.push({
-            src: 'data:image/jpg;base64,' + t.CurImgBase
-          })
-        }
+        _this = this
+          this.getImg(askId, '0').then(function(res){
+            PageCount = res.PageCount
+            _this.cid = askId
+            _this.isFinish = parseInt(GetQueryString('finish'))
+            _this.contractList[0]={ // 合同放入列表
+              src: 'data:image/jpg;base64,' + res.CurImgBase
+            }
+            _this.$indicator.close();
+            for (var index = 1; index < PageCount; index++) { // 循环获取剩余页合同
+              this.getImg(askId, index).then(function(res){
+                this.contractList[index]={
+                  src: 'data:image/jpg;base64,' + res.CurImgBase
+                }
+              })    
+            }
+          }) // 获取第一页合同
       } catch (error) {
         this.$indicator.close();
         this.$toast(getCodeToMsg(error))
@@ -420,7 +428,7 @@
     // var url = window.webConfig.apiUrl + '/api/userauth/postface' // 
     var url = window.webConfig.apiUrl + '/api/SignOper/facesign' // 
     // 请求数据
-    axios.post(url, data).then(res => {
+    axios.post(url, data).then(function(res){
       vm.$indicator.close();
       var jsonRet = JSON.parse(res.data)
       if (jsonRet.ReturnCode === 'SUCCESS') {
@@ -433,7 +441,7 @@
         vm.$toast(errMsg)
       }
       // 其他逻辑
-    }).catch(err => {
+    }).catch(function(err){
       vm.$indicator.close();
       document.querySelectorAll('.dialog')[1].className = 'dialog is-active'
     })
@@ -480,12 +488,14 @@
       this.cxt.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }.bind(this), false);
     //保存图片，直接转base64
-    this.saveEl.addEventListener("click",async function () {
+    this.saveEl.addEventListener("click",function () {
       var imgBase64 = this.canvas.toDataURL('image/jpeg');
-      var base64 = await canvasDataURL(imgBase64,{width:345,height:150,quality:1})
-      var imgel=document.createElement('img')
-      imgel.src=base64
-      uploadWord(base64)
+      canvasDataURL(imgBase64,{width:345,height:150,quality:1}).then(function(base64){
+        var imgel=document.createElement('img')
+        imgel.src=base64
+        uploadWord(base64)
+      })
+      
     }.bind(this), false);
   };
   // 上传图片识别文字
@@ -499,7 +509,7 @@
     formData.append("tel", window.sessionStorage.getItem('tel'));
     formData.append("cid", vm.cid);
     formData.append("imghdw", base64Img.slice(base64Img.indexOf('base64,')+7));
-    axios.post(url, formData).then(res => {
+    axios.post(url, formData).then(function(res){
       vm.$indicator.close();
       var jsonRet = JSON.parse(res.data)
       if (jsonRet.ReturnCode === 'SUCCESS') {
@@ -513,7 +523,7 @@
         });
       }
       // 其他逻辑
-    }).catch(err => {
+    }).catch(function(err) {
       vm.$indicator.close();
       vm.$toast('系统错误！')
     })

@@ -1,0 +1,73 @@
+/* 底部导航 */
+footer.fixed {
+  position: fixed;
+  bottom: 0;
+}
+.fixed > ul {
+  display: flex;
+  border-top: 0.013333rem solid rgba(0, 0, 0, 0.3);
+  padding: .213333rem 0;
+}
+.fixed > ul > li {
+  width: 33vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.fixed > ul > li a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #7d7d7d;
+}
+[data-dpr="1"] .fixed > ul > li i {
+  background: url('../img/icon-nav.png') no-repeat;
+  width: 20px;
+  height: 18px;
+}
+[data-dpr="2"] .fixed > ul > li i {
+  background: url('../img/icon-nav@2x.png') no-repeat;
+  width: 35px;
+  height: 34px;
+}
+[data-dpr="3"] .fixed > ul > li i {
+  background: url('../img/icon-nav@3x.png') no-repeat;
+  width: 52px;
+  height: 54px;
+}
+.fixed > ul > li i.sign-wait {
+  background-position: 0 0;
+}
+[data-dpr="1"] .fixed > ul > li i.sign-finish {
+  background-position-x: -45px;
+}
+[data-dpr="2"] .fixed > ul > li i.sign-finish {
+  background-position-x: -90px;
+}
+[data-dpr="3"] .fixed > ul > li i.sign-finish {
+  background-position-x: -133px;
+}
+[data-dpr="1"] .fixed > ul > li i.sign-person {
+  background-position-x: -88px;
+}
+[data-dpr="2"] .fixed > ul > li i.sign-person {
+  background-position-x: -174px;
+}
+[data-dpr="3"] .fixed > ul > li i.sign-person {
+  background-position-x: -267px;
+}
+[data-dpr="1"] .fixed > ul > li.active i {
+  background-position-y: -28px;
+}
+[data-dpr="2"] .fixed > ul > li.active i {
+  background-position-y: -56px;
+}
+[data-dpr="3"] .fixed > ul > li.active i {
+  background-position-y: -82px;
+}
+li.active {
+  color: #fa5c58;
+}
+.fixed > ul > li span {
+  margin-top: .186667rem;
+}
