@@ -221,5 +221,5 @@ function isLogin() {
   if (path.indexOf('login.html') >= 0 | isLogin()) {
     return;
   }
-  //window.location.href = './login.html';
+  window.location.href = './login.html';
 })();

@@ -52,7 +52,7 @@
     footer.fixed {
       position: fixed;
       bottom: 0;
-      padding-bottom: .666667rem;
+      padding-bottom: 2.666667rem;
     }
 
     /* 手写区域 */
@@ -121,7 +121,7 @@
           margin: 0px .853333rem;
           border-top: solid 1px #9a9a9a;
           margin-top: .986667rem;
-          padding: .653333rem 0;
+          padding: .253333rem 0;
       }
       .text-content p{
         font-size: .426667rem;
@@ -137,7 +137,7 @@
       }
       /* 按钮位置调整 */
       .btn-content{
-        margin-top: .813333rem;
+        margin-top: .213333rem;
       }
       /* 隐藏上传文件按钮 */
       input[type='file']{
@@ -243,15 +243,15 @@
         </section>
       </article>
     </section>
-    <section v-show="step===2">
+    <section v-show="step===2" style="display: none;">
       <header>
         <a href=""><img src="../img/icon-back.png" alt=""></a>
-        <h1>人脸识别</h1>
+        <h1>人脸识别扫描</h1>
       </header>
       <article class="main bg-f7">
-        <section class="top-content">
+        <!-- <section class="top-content">
           <span>人脸识别扫描</span>
-        </section>
+        </section> -->
         <section class="pic-content">
           <div class="pic-group">
             <img id="face" src="../img/logo-face@2x.png" alt="">
@@ -405,7 +405,7 @@
   }
 
   function faceSacn() {
-    this.step = 2
+    this.step = 2;
   }
   // 上传人脸照片
   function upLoadFace() {
