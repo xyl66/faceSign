@@ -314,18 +314,22 @@
 <script>
   window.onload = function () {
     bindImgChange('img1',function (e) {
+      try {
       var imgs = document.getElementById('img1').files[0]
       // 下面逻辑处理
       photoCompress(imgs,{width:600},function(base64){
         var imgel=new Image()
         imgel.src=base64
-        vm.CurImgBase = dataURLtoFile(base64)
+        vm.CurImgBase = base64
         vm.upLoadFace()
       })
       // vm.CurImgBase = imgs
       // vm.upLoadFace()
       // var imgel=document.createElement('img')
       // imgel.src=base64
+    } catch (error) {
+      vm.$toast('错误'+error)
+      }
     })
   }
   // 初始化vue
