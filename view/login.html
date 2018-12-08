@@ -147,6 +147,7 @@
           // 登录成功
           window.sessionStorage.setItem('tel', phone)
           // 跳转页面
+          _this.$toast('登录成功！')
           window.location.href = './signWait.html'
         } else if (res.data === 'UNAUTHENTICATED') {
           // 未实名认证
@@ -157,6 +158,7 @@
         }
       }).catch(function(err){
         console.log(err)
+        _this.$toast('登录失败:'+err)
       })
     }
   </script>

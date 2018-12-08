@@ -78,7 +78,7 @@
       },
       mounted:function() {
         var _this = this
-        //window.sessionStorage.setItem('tel','15112663977')
+        // window.sessionStorage.setItem('tel','15112663977')
           _this.phone = window.sessionStorage.getItem('tel')
         var url = window.webConfig.apiUrl + '/api/SignOper/getlist?id=' + _this.phone + '&status=0'
         request.get(url,_this).then(function (res) {
