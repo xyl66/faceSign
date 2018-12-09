@@ -214,16 +214,22 @@ var request = {
  * @returns
  */
 function isLogin() {
+  var reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
+  return window.sessionStorage.getItem('tel') != null && reg.test(window.sessionStorage.getItem('tel'));
+}
+/**
+ * 检测safari无痕模式
+ */
+function checkSafariS(){
   try {
     window.localStorage.foobar = "foobar";
   } catch(_) {
       alert("本地储存写入错误，若为safari浏览器请关闭无痕(隐身)模式浏览。");
   }
-  var reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
-  return window.sessionStorage.getItem('tel') != null && reg.test(window.sessionStorage.getItem('tel'));
 }
 (function () {
   var path = window.location.pathname;
+  checkSafariS()
   if (path.indexOf('login.html') >= 0 | isLogin()) {
     return;
   }
