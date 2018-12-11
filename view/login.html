@@ -44,7 +44,7 @@
   <script src="../js/polyfill.min.js"></script>
 
   <script src="../js/polyfill.min.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="../js/axios/dist/axios.min.js"></script>
   <script src="../js/config/config.js"></script>
   <script src="../js/vue/vue-2.5.17.js"></script>
   <!-- 引入组件库 -->
@@ -54,13 +54,13 @@
   <script src="../js/common.js"></script>
   <script>
     var timeClock = null,
-    vm = new Vue({
-      el: '#app',
-      methods: {
-        submit: submit,
-        send: send
-      }
-    })
+      vm = new Vue({
+        el: '#app',
+        methods: {
+          submit: submit,
+          send: send
+        }
+      })
     /**
      * 发送验证码
      */
@@ -72,19 +72,19 @@
         return
       }
       // 是否已发送验证码
-      if (timeClock&&timeClock.timeClock) {
+      if (timeClock && timeClock.timeClock) {
         return
       }
       var _this = this,
         phone = document.getElementById('phone').value,
         url = window.webConfig.apiUrl + '/api/userauth/askcode?id=' + phone, // 请求地址
         el = event.target
-        timeClock = timeClock ? timeClock: new Clock(function(res){ // 实例化定时器
-          el.innerHTML = res+'秒'
-        },function(){
-          el.disabled = false
-          el.innerHTML = '发送验证码'
-        })
+      timeClock = timeClock ? timeClock : new Clock(function (res) { // 实例化定时器
+        el.innerHTML = res + '秒'
+      }, function () {
+        el.disabled = false
+        el.innerHTML = '发送验证码'
+      })
       // common.js中request
       request.get(url, _this).then(function (res) {
         console.log(res)
@@ -104,21 +104,21 @@
      * @param {function} callback1 未到时执行函数 返回当前剩余间隔
      * @param {function} callback2 到时执行函数
      */
-    function Clock(callback1,callback2) {
+    function Clock(callback1, callback2) {
       this.timeClock = null
       this.time = 60 //定时间隔
-      this.start = function(){
+      this.start = function () {
         var _this = this,
-        time = this.time
+          time = this.time
         this.timeClock = setInterval(function () {
-            time--
-            if (time > 0) {
-              callback1(time) // 未到时执行函数
-            } else {
-              _this.end() // 关闭定时器
-              callback2() // 到时执行函数
-            }
-          }, 1000)
+          time--
+          if (time > 0) {
+            callback1(time) // 未到时执行函数
+          } else {
+            _this.end() // 关闭定时器
+            callback2() // 到时执行函数
+          }
+        }, 1000)
       }
       this.end = function () {
         clearInterval(this.timeClock) // 清除定时器
@@ -143,22 +143,27 @@
         return
       }
       request.get(url, _this).then(function (res) {
-        if (res.data === 'SUCCESS') {
-          // 登录成功
-          window.sessionStorage.setItem('tel', phone)
-          // 跳转页面
-          _this.$toast('登录成功！')
-          window.location.href = './signWait.html'
-        } else if (res.data === 'UNAUTHENTICATED') {
-          // 未实名认证
-          window.sessionStorage.setItem('tel', phone)
-          window.location.href = './email.html'
-        } else {
-          _this.$toast(getCodeToMsg(res.data))
+        try {
+          if (res.data === 'SUCCESS') {
+            // 登录成功
+            window.sessionStorage.setItem('tel', phone);
+            // 跳转页面
+            _this.$toast('登录成功！');
+            window.location.href = './signWait.html';
+            window.event.returnValue=false;
+          } else if (res.data === 'UNAUTHENTICATED') {
+            // 未实名认证
+            window.sessionStorage.setItem('tel', phone)
+            window.location.href = './email.html'
+          } else {
+            _this.$toast(getCodeToMsg(res.data))
+          }
+        } catch (error) {
+          _this.$toast('登录失败:' + err)
         }
-      }).catch(function(err){
+      }).catch(function (err) {
         console.log(err)
-        _this.$toast('登录失败:'+err)
+        _this.$toast('登录失败:' + err)
       })
     }
   </script>

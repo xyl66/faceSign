@@ -9,7 +9,7 @@ function upLoad(id) {
  *
  *绑定上传input[file]事件
  * @param {*} idInput 绑定按钮id
- * @param {*} callback 回调函数返回图片base64
+ * @param {*} callback 回调函数返回图片base64,file
  */
 function bindImgChange(idInput, callback) {
   document.getElementById(idInput).addEventListener('change', function (e) {
@@ -20,7 +20,8 @@ function bindImgChange(idInput, callback) {
       // 图片的 base64 格式, 可以直接当成 img 的 src 属性值        
       var dataURL = reader.result;
       if (callback) {
-        callback(dataURL);
+        callback(dataURL,file);
+        e.target.files = null
       }
     };
   });
@@ -59,7 +60,7 @@ function dataURLtoFile(dataurl) {
  *图片压缩
  * @param {*} file 文件(类型是图片格式)
  * @param {*} obj 设置参数{width:转换后的宽度，height:转换后的高度，quality:转后图片质量}
- * @returns
+ * @param {function} callback 回调函数(图片base64)
  */
 function photoCompress(file, obj,callback) {
     var ready = new FileReader();
@@ -156,7 +157,7 @@ var request = {
         resolve(res);
       }).catch(function (err) {
         scope.$indicator.close();
-        console.log(err);
+        scope.$toast('出错:' + err)
       });
     });
   },
@@ -170,7 +171,7 @@ var request = {
         resolve(res);
       }).catch(function (err) {
         scope.$indicator.close();
-        console.log(err);
+        scope.$toast('出错:' + err)
       });
     });
   }
@@ -233,5 +234,5 @@ function checkSafariS(){
   if (path.indexOf('login.html') >= 0 | isLogin()) {
     return;
   }
-  window.location.href = './login.html';
+  //window.location.href = './login.html';
 })();

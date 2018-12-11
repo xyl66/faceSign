@@ -304,7 +304,7 @@
 </body>
 <script src="../js/polyfill.min.js"></script>
 
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../js/axios/dist/axios.min.js"></script>
 <script src="../js/config/config.js"></script>
 <script src="../js/vue/vue-2.5.17.js"></script>
 <!-- 引入组件库 -->
@@ -313,18 +313,18 @@
 <script src="../js/common.js"></script>
 <script>
   window.onload = function () {
-    bindImgChange('img1',function (e) {
+    bindImgChange('img1',function (e,file) {
       try {
-      var imgs = document.getElementById('img1').files[0]
+      var imgs = file
       // 下面逻辑处理
-      // photoCompress(imgs,{width:600},function(base64){
-      //   var imgel=new Image()
-      //   imgel.src=base64
-      //   vm.CurImgBase = base64
-      //   vm.upLoadFace()
-      // })
-      vm.CurImgBase = imgs
-      vm.upLoadFace()
+      photoCompress(imgs,{width:600},function(base64){
+        // var imgel=new Image()
+        // imgel.src=base64
+        vm.CurImgBase = base64.slice(base64.indexOf('base64,')+7)
+        vm.upLoadFace()
+      })
+      // vm.CurImgBase = imgs
+      // vm.upLoadFace()
       // var imgel=document.createElement('img')
       // imgel.src=base64
     } catch (error) {
@@ -432,7 +432,7 @@
       spinnerType: 'triple-bounce'
     });
     // var url = window.webConfig.apiUrl + '/api/userauth/postface' // 
-    var url = window.webConfig.apiUrl + '/api/SignOper/facesign' // 
+    var url = window.webConfig.apiUrl + '/api/SignOper/bfacesign' // 
     // 请求数据
     axios.post(url, data).then(function(res){
       vm.$indicator.close();
@@ -441,6 +441,7 @@
         // document.querySelectorAll('.dialog')[0].className += ' is-active' // 显示签名区
         // 跳转页面
         window.location.href = './success.html'
+        window.event.returnValue=false;
       } else {
         var JsonDesc = JSON.parse(jsonRet.JsonDesc),
         errMsg = jsonRet.ReturnCode==='FACEIMGERROR'?getCodeToMsg(jsonRet.ReturnCode)+'('+JsonDesc.error_msg+')':getCodeToMsg(jsonRet.ReturnCode)

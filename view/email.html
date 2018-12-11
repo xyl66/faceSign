@@ -48,7 +48,7 @@
 </body>
 <script src="../js/polyfill.min.js"></script>
 
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../js/axios/dist/axios.min.js"></script>
 <script src="../js/config/config.js"></script>
 <script src="../js/vue/vue-2.5.17.js"></script>
 <!-- 引入组件库 -->
@@ -87,6 +87,7 @@
       if (jsonRet.ReturnCode === 'SUCCESS') {
         // 跳转页面
         window.location.href = './cardUp.html'
+        window.event.returnValue=false;
       } else {
         _this.$toast(getCodeToMsg(jsonRet.ReturnCode))
       }
