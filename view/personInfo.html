@@ -9,7 +9,7 @@
     <script src="../js/flexible/flexible.js"></script>
     <!-- less -->
     <link rel="stylesheet" href="../css/style.css">
-    
+
     <title>个人中心</title>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="../js/mint-ui/lib/style.css">
@@ -49,10 +49,12 @@
         }
 
         /* 头像部分 */
-        .card-box>.header>img {
+        .card-box>.header>.avr {
             width: 2.426667rem;
             height: 2.426667rem;
             margin: -1.213333rem 0 0 2.546667rem;
+            background-size: cover !important;
+            border-radius: 50%;
         }
 
         /* 列表信息部分 */
@@ -92,6 +94,23 @@
         .person-info-content li span.body {
             margin-left: .36rem;
         }
+
+        /* 头像更新样式 */
+        .update-avr {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9;
+        }
+
+        .btn-cut {}
     </style>
 </head>
 
@@ -106,7 +125,8 @@
         <section class="info-content">
             <div class="card-box">
                 <section class="header">
-                    <img src="../img/icon-person.png" alt="" srcset="">
+                    <div class="avr" :style="'background:url('+avr+') no-repeat center'" alt="" srcset="" @click="handleUploadAvr"></div>
+                    <input type="file" name="avr" id="avr">
                 </section>
                 <section class="person-info-content">
                     <ul>
@@ -124,6 +144,16 @@
                         </li>
                     </ul>
                 </section>
+            </div>
+        </section>
+        <section v-show="isUploadAvr" class="update-avr" style="display: none;">
+            <div class="container">
+                <img :src="chooseImg">
+            </div>
+            <div class="btn-content">
+                <button class="btn btn-small btn-primary btn-cut" @click="isUploadAvr=0">取消</button>
+                <button class="btn btn-small btn-primary btn-cut" @click="handleCut">确认</button>
+
             </div>
         </section>
     </article>
@@ -159,16 +189,38 @@
 <script src="../js/mint-ui/lib/index.js"></script>
 <!-- 放在mint组件库后面 -->
 <script src="../js/common.js"></script>
+<!-- 图片裁剪 -->
+<script src="../js/imgZoom/jquery-1.11.0.min.js"></script><!-- jQuery is required -->
+<link href="../js/cropper/dist/cropper.css" rel="stylesheet">
+<script src="../js/cropper/dist/cropper.js"></script>
 <script>
     var vm = new Vue({
         el: '#app',
         data: {
             phone: '- -',
             email: '- -',
-            auth: '- -'
+            auth: '- -',
+            isUploadAvr: false, // 是否上传头像
+            avr: '../img/icon-person.png',
+            chooseImg: '',
         },
-        mounted:function() {
+        mounted: function () {
             var _this = this
+            // 绑定图片上传事件
+            bindImgChange('avr', function (e, file) {
+                // 下面逻辑处理
+                //1.等比缩放图片
+                var width = 300
+                width = window.document.documentElement.getAttribute('data-dpr')?width*parseInt(window.document.documentElement.getAttribute('data-dpr')):width
+                photoCompress(file,{width:width},function(base64){
+                    //1.1 赋值
+                    _this.chooseImg = base64
+                    //1.2 裁剪
+                    setTimeout(function(){
+                        _this.startCut()
+                    },500)
+                })
+            })
             this.phone = window.sessionStorage.getItem('tel')
             var url = window.webConfig.apiUrl + '/api/userauth/getinfo?id=' + this.phone
             request.get(url, this).then(function (res) {
@@ -177,10 +229,66 @@
                     var t = JSON.parse(jsonRet.JsonDesc)
                     _this.email = t.mail
                     _this.auth = t.isVerified ? '已认证' : '未认证'
+                    _this.avr = !!t.img ? 'data:image/png;base64,' + t.img : _this.avr
                 }
             })
+            // 
+            $('.container > img').cropper({
+            aspectRatio: 16 / 16,
+            crop: function (data) {
+                // 出来裁切后的图片数据.
+                console.log('裁剪后数据', data)
+            }
+        });
+        },
+        methods: {
+            handleUploadAvr: clickAvr,
+            startCut:startCut,
+            handleCut: handleCut,
         }
     })
+    // 上传头像单击事件
+    function clickAvr() {
+        document.getElementById('avr').click()
+    }
+    // 开始裁剪
+    function startCut(){
+        this.isUploadAvr = true
+        $('.container > img').cropper('replace',this.chooseImg,true)
+    }
+    // 裁剪
+    function handleCut() {
+        try {
+            var _this = this
+            cas = $('.container > img').cropper('getCroppedCanvas'); // 获取被裁剪后的canvas
+            var base64 = cas.toDataURL('image/png'); // 转换为base64
+            // 得到裁剪后base64数据继续下一步
+            var url = window.webConfig.apiUrl + '/api/userauth/bupuserico', // 
+                formData = new FormData();
+            formData.append("tel", this.phone);
+            formData.append("usico", base64.slice(base64.indexOf('base64,') + 7));
+            // 请求数据
+            request.post(url, formData, this).then(function (res) {
+                var jsonRet = JSON.parse(res.data)
+                console.log(jsonRet)
+                if (jsonRet.ReturnCode === 'SUCCESS') {
+                    // document.querySelectorAll('.dialog')[0].className += ' is-active' // 显示签名区
+                    // 跳转页面
+                    vm.$toast('修改成功')
+                    _this.avr = base64
+                    _this.isUploadAvr = false
+                } else {
+                    var JsonDesc = JSON.parse(jsonRet.JsonDesc),
+                        errMsg = jsonRet.ReturnCode === 'FACEIMGERROR' ? getCodeToMsg(jsonRet.ReturnCode) + '(' +
+                        JsonDesc.error_msg + ')' : getCodeToMsg(jsonRet.ReturnCode)
+                    vm.$toast(errMsg)
+                }
+            })
+        } catch (error) {
+            console.log('操作失败:', error)
+            this.$toast('操作失败:' + error)
+        }
+    }
 </script>
 
 </html>

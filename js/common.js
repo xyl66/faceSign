@@ -223,7 +223,7 @@ function isLogin() {
  */
 function checkSafariS(){
   try {
-    window.localStorage.foobar = "foobar";
+    window.sessionStorage.foobar = "foobar";
   } catch(_) {
       alert("本地储存写入错误，若为safari浏览器请关闭无痕(隐身)模式浏览。");
   }
@@ -234,5 +234,5 @@ function checkSafariS(){
   if (path.indexOf('login.html') >= 0 | isLogin()) {
     return;
   }
-  //window.location.href = './login.html';
+  window.location.href = './login.html';
 })();
